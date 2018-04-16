@@ -1,5 +1,17 @@
 #include "gl_widget.h"
 
+void GL_Widget::setBlendTestIndexFirst(int blendTestIndexFirst)
+{
+    m_blendTestIndexFirst = blendTestIndexFirst;
+    this->updateGL();
+}
+
+void GL_Widget::setBlendTestIndexSecond(int blendTestIndexSecond)
+{
+    m_blendTestIndexSecond = blendTestIndexSecond;
+    this->updateGL();
+}
+
 GL_Widget::GL_Widget(QWidget *parent):
     QGLWidget(parent)
 {
@@ -185,6 +197,7 @@ void GL_Widget::figuresGL(){
 
 void GL_Widget::startDrawing(){
     opacityTestEnable();
+    blendTestEnable();
     figuresGL();
 }
 
@@ -218,7 +231,83 @@ void GL_Widget::opacityTestEnable()
         glDisable(GL_ALPHA_TEST);
         break;
     }
+}
 
+void GL_Widget::blendTestEnable()
+{
+    glEnable(GL_BLEND);
+    GLenum sfactor;
+    GLenum dfactor;
+
+    switch (m_blendTestIndexFirst) {
+    case 0:
+        sfactor = GL_ZERO;
+        break;
+    case 1:
+        sfactor = GL_ONE;
+        break;
+    case 2:
+        sfactor = GL_DST_COLOR;
+        break;
+    case 3:
+        sfactor = GL_ONE_MINUS_DST_COLOR;
+        break;
+    case 4:
+        sfactor = GL_SRC_ALPHA;
+        break;
+    case 5:
+        sfactor = GL_ONE_MINUS_SRC_ALPHA;
+        break;
+    case 6:
+        sfactor = GL_DST_ALPHA;
+        break;
+    case 7:
+        sfactor = GL_ONE_MINUS_DST_ALPHA;
+        break;
+    case 8:
+        sfactor = GL_SRC_ALPHA_SATURATE;
+        break;
+    default:
+        //glDisable(GL_BLEND);
+        break;
+    }
+
+    switch (m_blendTestIndexSecond) {
+    case 0:
+        dfactor = GL_ZERO;
+        break;
+    case 1:
+        dfactor = GL_ONE;
+        break;
+    case 2:
+        dfactor = GL_DST_COLOR;
+        break;
+    case 3:
+        dfactor = GL_ONE_MINUS_DST_COLOR;
+        break;
+    case 4:
+        dfactor = GL_SRC_ALPHA;
+        break;
+    case 5:
+        dfactor = GL_ONE_MINUS_SRC_ALPHA;
+        break;
+    case 6:
+        dfactor = GL_DST_ALPHA;
+        break;
+    case 7:
+        dfactor = GL_ONE_MINUS_DST_ALPHA;
+        break;
+    case 8:
+        dfactor = GL_SRC_ALPHA_SATURATE;
+        break;
+    default:
+        //glDisable(GL_BLEND);
+        break;
+    }
+
+    qDebug() << m_blendTestIndexFirst << m_blendTestIndexSecond;
+
+    glBlendFunc(sfactor, dfactor);
 }
 
 void GL_Widget::setPrimitive(int p){

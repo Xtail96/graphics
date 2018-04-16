@@ -29,6 +29,28 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->opacityTestComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setAlphaTestIndex(int)));
     QObject::connect(ui->opacityDial, SIGNAL(valueChanged(int)), ui->fieldGLWidget, SLOT(setAlphaTestValue(int)));
     QObject::connect(ui->opacityDial, SIGNAL(valueChanged(int)), this, SLOT(setOpacityValue(int)));
+
+    ui->blendTest1ComboBox->addItem("GL_ZERO");
+    ui->blendTest1ComboBox->addItem("GL_ONE");
+    ui->blendTest1ComboBox->addItem("GL_SRC_COLOR");
+    ui->blendTest1ComboBox->addItem("GL_ONE_MINUS_SRC_COLOR");
+    ui->blendTest1ComboBox->addItem("GL_SRC_ALPHA");
+    ui->blendTest1ComboBox->addItem("GL_ONE_MINUS_SRC_ALPHA");
+    ui->blendTest1ComboBox->addItem("GL_DST_ALPHA");
+    ui->blendTest1ComboBox->addItem("GL_ONE_MINUS_DST_ALPHA");
+    ui->blendTest1ComboBox->addItem("GL_SRC_ALPHA_SATURATE");
+    QObject::connect(ui->blendTest1ComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setBlendTestIndexFirst(int)));
+
+    ui->blendTest2ComboBox->addItem("GL_ZERO");
+    ui->blendTest2ComboBox->addItem("GL_ONE");
+    ui->blendTest2ComboBox->addItem("GL_SRC_COLOR");
+    ui->blendTest2ComboBox->addItem("GL_ONE_MINUS_SRC_COLOR");
+    ui->blendTest2ComboBox->addItem("GL_SRC_ALPHA");
+    ui->blendTest2ComboBox->addItem("GL_ONE_MINUS_SRC_ALPHA");
+    ui->blendTest2ComboBox->addItem("GL_DST_ALPHA");
+    ui->blendTest2ComboBox->addItem("GL_ONE_MINUS_DST_ALPHA");
+    QObject::connect(ui->blendTest2ComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setBlendTestIndexSecond(int)));
+
 }
 
 MainWindow::~MainWindow()
@@ -39,6 +61,5 @@ MainWindow::~MainWindow()
 void MainWindow::setOpacityValue(int value)
 {
     double tmp = (double) value / 100;
-    qDebug() << tmp;
     ui->opacityLcdNumber->display(tmp);
 }
