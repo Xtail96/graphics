@@ -17,6 +17,10 @@ GL_Widget::GL_Widget(QWidget *parent):
         tmp.x = (double) (rand()) / RAND_MAX * (up - floor) + floor;
         tmp.y = (double) (rand()) / RAND_MAX * (up - floor) + floor;
         tmp.z = (double) (rand()) / RAND_MAX * (up - floor) + floor;
+        tmp.red = (double) (rand()) / RAND_MAX;
+        tmp.green = (double) (rand()) / RAND_MAX;
+        tmp.blue = (double) (rand()) / RAND_MAX;
+        tmp.alpha = (double) (rand()) / RAND_MAX;
         m_points.push_back(tmp);
     }
 
@@ -41,10 +45,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -59,10 +60,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -76,10 +74,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -93,10 +88,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -110,10 +102,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -127,10 +116,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -143,10 +129,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -160,10 +143,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -177,10 +157,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -194,10 +171,7 @@ void GL_Widget::figuresGL(){
 
         for(auto point : m_points)
         {
-            glColor4f((double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX,
-                      (double) (rand()) / RAND_MAX);
+            glColor4f(point.red, point.green, point.blue, point.alpha);
             glVertex3f(point.x, point.y, point.z);
         }
 
@@ -210,11 +184,57 @@ void GL_Widget::figuresGL(){
 }
 
 void GL_Widget::startDrawing(){
+    opacityTestEnable();
     figuresGL();
+}
+
+void GL_Widget::opacityTestEnable()
+{
+    glEnable(GL_ALPHA_TEST);
+
+    switch (m_alphaTestIndex) {
+    case 0:
+        glAlphaFunc(GL_NEVER, m_alphaTestValue);
+        break;
+    case 1:
+        glAlphaFunc(GL_LESS, m_alphaTestValue);
+        break;
+    case 3:
+        glAlphaFunc(GL_EQUAL, m_alphaTestValue);
+        break;
+    case 4:
+        glAlphaFunc(GL_LEQUAL, m_alphaTestValue);
+        break;
+    case 5:
+        glAlphaFunc(GL_GREATER, m_alphaTestValue);
+        break;
+    case 6:
+        glAlphaFunc(GL_NOTEQUAL, m_alphaTestValue);
+        break;
+    case 7:
+        glAlphaFunc(GL_ALWAYS, m_alphaTestValue);
+        break;
+    default:
+        glDisable(GL_ALPHA_TEST);
+        break;
+    }
+
 }
 
 void GL_Widget::setPrimitive(int p){
     this->m_primitiveIndex = p;
+    this->updateGL();
+}
+
+void GL_Widget::setAlphaTestIndex(int alphaTestIndex)
+{
+    m_alphaTestIndex = alphaTestIndex;
+    this->updateGL();
+}
+
+void GL_Widget::setAlphaTestValue(int alphaTestValue)
+{
+    m_alphaTestValue =  (double) alphaTestValue / 100;
     this->updateGL();
 }
 
