@@ -1,24 +1,12 @@
 #include "gl_widget.h"
 
-void GL_Widget::setBlendTestIndexFirst(int blendTestIndexFirst)
-{
-    m_blendTestIndexFirst = blendTestIndexFirst;
-    this->updateGL();
-}
-
-void GL_Widget::setBlendTestIndexSecond(int blendTestIndexSecond)
-{
-    m_blendTestIndexSecond = blendTestIndexSecond;
-    this->updateGL();
-}
-
 GL_Widget::GL_Widget(QWidget *parent):
     QGLWidget(parent)
 {
     m_primitiveIndex=0;
     setGeometry(20, 20, 550, 500);
 
-    int pointsCount = 9;
+    int pointsCount = 50;
 
     double floor = -0.9;
     double up = 0.9;
@@ -196,15 +184,34 @@ void GL_Widget::figuresGL(){
 }
 
 void GL_Widget::startDrawing(){
-    opacityTestEnable();
-    blendTestEnable();
-    figuresGL();
+
+    switch (m_filter) {
+    case 0:
+        glEnable(GL_ALPHA_TEST);
+        opacityTestEnable();
+        figuresGL();
+        glDisable(GL_ALPHA_TEST);
+        break;
+    case 1:
+        glEnable(GL_BLEND);
+        blendTestEnable();
+        figuresGL();
+        glDisable(GL_BLEND);
+        break;
+    case 2:
+        glEnable(GL_SCISSOR_TEST);
+        scissorTestEnable();
+        figuresGL();
+        glDisable(GL_SCISSOR_TEST);
+        break;
+    default:
+        figuresGL();
+        break;
+    }
 }
 
 void GL_Widget::opacityTestEnable()
 {
-    glEnable(GL_ALPHA_TEST);
-
     switch (m_alphaTestIndex) {
     case 0:
         glAlphaFunc(GL_NEVER, m_alphaTestValue);
@@ -235,7 +242,6 @@ void GL_Widget::opacityTestEnable()
 
 void GL_Widget::blendTestEnable()
 {
-    glEnable(GL_BLEND);
     GLenum sfactor;
     GLenum dfactor;
 
@@ -305,9 +311,14 @@ void GL_Widget::blendTestEnable()
         break;
     }
 
-    qDebug() << m_blendTestIndexFirst << m_blendTestIndexSecond;
+    //qDebug() << m_blendTestIndexFirst << m_blendTestIndexSecond;
 
     glBlendFunc(sfactor, dfactor);
+}
+
+void GL_Widget::scissorTestEnable()
+{
+    glScissor(m_scissorTestX, m_scissporTestY, m_scissorTestW, m_scissorTestH);
 }
 
 void GL_Widget::setPrimitive(int p){
@@ -324,6 +335,48 @@ void GL_Widget::setAlphaTestIndex(int alphaTestIndex)
 void GL_Widget::setAlphaTestValue(int alphaTestValue)
 {
     m_alphaTestValue =  (double) alphaTestValue / 100;
+    this->updateGL();
+}
+
+void GL_Widget::setBlendTestIndexFirst(int blendTestIndexFirst)
+{
+    m_blendTestIndexFirst = blendTestIndexFirst;
+    this->updateGL();
+}
+
+void GL_Widget::setBlendTestIndexSecond(int blendTestIndexSecond)
+{
+    m_blendTestIndexSecond = blendTestIndexSecond;
+    this->updateGL();
+}
+
+void GL_Widget::setScissorTestX(int scissorTestX)
+{
+    m_scissorTestX = (double) scissorTestX;
+    this->updateGL();
+}
+
+void GL_Widget::setScissorTestY(int scissporTestY)
+{
+    m_scissporTestY = (double) scissporTestY;
+    this->updateGL();
+}
+
+void GL_Widget::setScissorTestW(int scissorTestW)
+{
+    m_scissorTestW = (double) scissorTestW;
+    this->updateGL();
+}
+
+void GL_Widget::setScissorTestH(int scissorTestH)
+{
+    m_scissorTestH = (double) scissorTestH;
+    this->updateGL();
+}
+
+void GL_Widget::setFilter(int filters)
+{
+    m_filter = filters;
     this->updateGL();
 }
 

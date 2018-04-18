@@ -21,6 +21,12 @@ private:
 
 protected slots:
     void setOpacityValue(int value);
+    void setScissorXValue(int value);
+    void setScissorYValue(int value);
+    void setScissorWValue(int value);
+    void setScissorHValue(int value);
+private slots:
+    void on_filterComboBox_activated(int index);
 };
 
 #endif // MAINWINDOW_H
