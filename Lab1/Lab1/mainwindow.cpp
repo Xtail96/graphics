@@ -18,9 +18,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->typesComboBox->addItem("GL_POLYGON");
     QObject::connect(ui->typesComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setPrimitive(int)));
 
+    ui->filterComboBox->addItem("-");
     ui->filterComboBox->addItem("Тест прозрачности");
     ui->filterComboBox->addItem("Тест смешения цветов");
     ui->filterComboBox->addItem("Тест отсечения");
+    ui->filterComboBox->addItem("Включить все тесты");
     QObject::connect(ui->filterComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setFilter(int)));
 
     ui->opacityTestComboBox->addItem("GL_NEVER");
@@ -132,7 +134,7 @@ void MainWindow::setScissorHValue(int value)
 void MainWindow::on_filterComboBox_activated(int index)
 {
     switch (index) {
-    case 0:
+    case 1:
         ui->alphaTestLabel->setEnabled(true);
         ui->alphaTestHorizontalSlider->setEnabled(true);
         ui->opacityLcdNumber->setEnabled(true);
@@ -160,7 +162,7 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHHorizontalSlider->setEnabled(false);
         ui->scissorTestHLcdNumber->setEnabled(false);
         break;
-    case 1:
+    case 2:
         ui->alphaTestLabel->setEnabled(false);
         ui->alphaTestHorizontalSlider->setEnabled(false);
         ui->opacityLcdNumber->setEnabled(false);
@@ -188,7 +190,7 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHHorizontalSlider->setEnabled(false);
         ui->scissorTestHLcdNumber->setEnabled(false);
         break;
-    case 2:
+    case 3:
         ui->alphaTestLabel->setEnabled(false);
         ui->alphaTestHorizontalSlider->setEnabled(false);
         ui->opacityLcdNumber->setEnabled(false);
@@ -197,6 +199,34 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->blendTestLabel->setEnabled(false);
         ui->blendTest1ComboBox->setEnabled(false);
         ui->blendTest2ComboBox->setEnabled(false);
+
+        ui->scissorTestLabel->setEnabled(true);
+
+        ui->scissorTestXLabel->setEnabled(true);
+        ui->scissorTestXHorizontalSlider->setEnabled(true);
+        ui->scissorTestXLcdNumber->setEnabled(true);
+
+        ui->scissorTestYLabel->setEnabled(true);
+        ui->scissorTestYHorizontalSlider->setEnabled(true);
+        ui->scissorTestYLcdNumber->setEnabled(true);
+
+        ui->scissorTestWidthLabel->setEnabled(true);
+        ui->scissorTestWHorizontalSlider->setEnabled(true);
+        ui->scissorTestWLcdNumber->setEnabled(true);
+
+        ui->scissorTestHeightLabel->setEnabled(true);
+        ui->scissorTestHHorizontalSlider->setEnabled(true);
+        ui->scissorTestHLcdNumber->setEnabled(true);
+        break;
+    case 4:
+        ui->alphaTestLabel->setEnabled(true);
+        ui->alphaTestHorizontalSlider->setEnabled(true);
+        ui->opacityLcdNumber->setEnabled(true);
+        ui->opacityTestComboBox->setEnabled(true);
+
+        ui->blendTestLabel->setEnabled(true);
+        ui->blendTest1ComboBox->setEnabled(true);
+        ui->blendTest2ComboBox->setEnabled(true);
 
         ui->scissorTestLabel->setEnabled(true);
 

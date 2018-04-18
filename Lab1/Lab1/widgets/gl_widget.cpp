@@ -186,23 +186,35 @@ void GL_Widget::figuresGL(){
 void GL_Widget::startDrawing(){
 
     switch (m_filter) {
-    case 0:
+    case 1:
         glEnable(GL_ALPHA_TEST);
         opacityTestEnable();
         figuresGL();
         glDisable(GL_ALPHA_TEST);
         break;
-    case 1:
+    case 2:
         glEnable(GL_BLEND);
         blendTestEnable();
         figuresGL();
         glDisable(GL_BLEND);
         break;
-    case 2:
+    case 3:
         glEnable(GL_SCISSOR_TEST);
         scissorTestEnable();
         figuresGL();
         glDisable(GL_SCISSOR_TEST);
+        break;
+    case 4:
+        glEnable(GL_ALPHA_TEST);
+        opacityTestEnable();
+        glEnable(GL_BLEND);
+        blendTestEnable();
+        glEnable(GL_SCISSOR_TEST);
+        scissorTestEnable();
+        figuresGL();
+        glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_BLEND);
+        glDisable(GL_ALPHA_TEST);
         break;
     default:
         figuresGL();
