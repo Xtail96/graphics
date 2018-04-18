@@ -23,7 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->filterComboBox->addItem("Тест смешения цветов");
     ui->filterComboBox->addItem("Тест отсечения");
     ui->filterComboBox->addItem("Включить все тесты");
-    QObject::connect(ui->filterComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setFilter(int)));
+    QObject::connect(ui->filterComboBox, SIGNAL(activated(int)), this, SLOT(activateTest(int)));
+    //QObject::connect(ui->filterComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setFilter(int)));
+
 
     ui->opacityTestComboBox->addItem("GL_NEVER");
     ui->opacityTestComboBox->addItem("GL_LESS");
@@ -34,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->opacityTestComboBox->addItem("GL_GEQUAL");
     ui->opacityTestComboBox->addItem("GL_ALWAYS");
     QObject::connect(ui->opacityTestComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setAlphaTestIndex(int)));
-    QObject::connect(ui->alphaTestHorizontalSlider, SIGNAL(valueChanged(int)), ui->fieldGLWidget, SLOT(setAlphaTestValue(int)));
     QObject::connect(ui->alphaTestHorizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(setOpacityValue(int)));
 
     ui->blendTest1ComboBox->addItem("GL_ZERO");
@@ -57,11 +58,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->blendTest2ComboBox->addItem("GL_DST_ALPHA");
     ui->blendTest2ComboBox->addItem("GL_ONE_MINUS_DST_ALPHA");
     QObject::connect(ui->blendTest2ComboBox, SIGNAL(activated(int)), ui->fieldGLWidget, SLOT(setBlendTestIndexSecond(int)));
-
-    QObject::connect(ui->scissorTestXHorizontalSlider, SIGNAL(valueChanged(int)), ui->fieldGLWidget, SLOT(setScissorTestX(int)));
-    QObject::connect(ui->scissorTestYHorizontalSlider, SIGNAL(valueChanged(int)), ui->fieldGLWidget, SLOT(setScissorTestY(int)));
-    QObject::connect(ui->scissorTestWHorizontalSlider, SIGNAL(valueChanged(int)), ui->fieldGLWidget, SLOT(setScissorTestW(int)));
-    QObject::connect(ui->scissorTestHHorizontalSlider, SIGNAL(valueChanged(int)), ui->fieldGLWidget, SLOT(setScissorTestH(int)));
 
     QObject::connect(ui->scissorTestXHorizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(setScissorXValue(int)));
     QObject::connect(ui->scissorTestYHorizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(setScissorYValue(int)));
@@ -101,40 +97,40 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setOpacityValue(int value)
+void MainWindow::activateAlphaTest()
 {
-    double tmp = (double) value;
-    ui->opacityLcdNumber->display(tmp);
+    ui->fieldGLWidget->setAlphaTestIndex(ui->opacityTestComboBox->currentIndex());
+    //ui->fieldGLWidget->setAlphaTestValue(ui->alphaTestHorizontalSlider->value());
+    setOpacityValue(ui->alphaTestHorizontalSlider->value());
 }
 
-void MainWindow::setScissorXValue(int value)
+void MainWindow::activateBlendTest()
 {
-    double tmp = (double) value;
-    ui->scissorTestXLcdNumber->display(tmp);
+    ui->fieldGLWidget->setBlendTestIndexFirst(ui->blendTest1ComboBox->currentIndex());
+    ui->fieldGLWidget->setBlendTestIndexSecond(ui->blendTest2ComboBox->currentIndex());
 }
 
-void MainWindow::setScissorYValue(int value)
+void MainWindow::activateScissorTest()
 {
-    double tmp = (double) value;
-    ui->scissorTestYLcdNumber->display(tmp);
+    /*ui->fieldGLWidget->setScissorTestX(ui->scissorTestXHorizontalSlider->value());
+    ui->fieldGLWidget->setScissorTestY(ui->scissorTestYHorizontalSlider->value());
+    ui->fieldGLWidget->setScissorTestW(ui->scissorTestWHorizontalSlider->value());
+    ui->fieldGLWidget->setScissorTestH(ui->scissorTestHHorizontalSlider->value());*/
+
+    setScissorXValue(ui->scissorTestXHorizontalSlider->value());
+    setScissorYValue(ui->scissorTestYHorizontalSlider->value());
+    setScissorWValue(ui->scissorTestWHorizontalSlider->value());
+    setScissorHValue(ui->scissorTestHHorizontalSlider->value());
 }
 
-void MainWindow::setScissorWValue(int value)
+void MainWindow::activateTest(int index)
 {
-    double tmp = (double) value;
-    ui->scissorTestWLcdNumber->display(tmp);
-}
-
-void MainWindow::setScissorHValue(int value)
-{
-    double tmp = (double) value;
-    ui->scissorTestHLcdNumber->display(tmp);
-}
-
-void MainWindow::on_filterComboBox_activated(int index)
-{
-    switch (index) {
+    switch (index)
+    {
     case 1:
+        ui->fieldGLWidget->setFilter(ALPHA_TEST);
+        activateAlphaTest();
+
         ui->alphaTestLabel->setEnabled(true);
         ui->alphaTestHorizontalSlider->setEnabled(true);
         ui->opacityLcdNumber->setEnabled(true);
@@ -161,8 +157,12 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHeightLabel->setEnabled(false);
         ui->scissorTestHHorizontalSlider->setEnabled(false);
         ui->scissorTestHLcdNumber->setEnabled(false);
+
         break;
     case 2:
+        ui->fieldGLWidget->setFilter(BLEND_TEST);
+        activateBlendTest();
+
         ui->alphaTestLabel->setEnabled(false);
         ui->alphaTestHorizontalSlider->setEnabled(false);
         ui->opacityLcdNumber->setEnabled(false);
@@ -189,8 +189,12 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHeightLabel->setEnabled(false);
         ui->scissorTestHHorizontalSlider->setEnabled(false);
         ui->scissorTestHLcdNumber->setEnabled(false);
+
         break;
     case 3:
+        ui->fieldGLWidget->setFilter(SCISSOR_TEST);
+        activateScissorTest();
+
         ui->alphaTestLabel->setEnabled(false);
         ui->alphaTestHorizontalSlider->setEnabled(false);
         ui->opacityLcdNumber->setEnabled(false);
@@ -217,8 +221,14 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHeightLabel->setEnabled(true);
         ui->scissorTestHHorizontalSlider->setEnabled(true);
         ui->scissorTestHLcdNumber->setEnabled(true);
+
         break;
     case 4:
+        ui->fieldGLWidget->setFilter(ALL_TEST);
+        activateAlphaTest();
+        activateBlendTest();
+        activateScissorTest();
+
         ui->alphaTestLabel->setEnabled(true);
         ui->alphaTestHorizontalSlider->setEnabled(true);
         ui->opacityLcdNumber->setEnabled(true);
@@ -247,6 +257,8 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHLcdNumber->setEnabled(true);
         break;
     default:
+        ui->fieldGLWidget->setFilter(NONE);
+
         ui->alphaTestLabel->setEnabled(false);
         ui->alphaTestHorizontalSlider->setEnabled(false);
         ui->opacityLcdNumber->setEnabled(false);
@@ -275,4 +287,39 @@ void MainWindow::on_filterComboBox_activated(int index)
         ui->scissorTestHLcdNumber->setEnabled(false);
         break;
     }
+}
+
+void MainWindow::setOpacityValue(int value)
+{
+    double tmp = (double) value;
+    ui->opacityLcdNumber->display(tmp);
+    ui->fieldGLWidget->setAlphaTestValue(tmp);
+}
+
+void MainWindow::setScissorXValue(int value)
+{
+    double tmp = (double) value;
+    ui->scissorTestXLcdNumber->display(tmp);
+    ui->fieldGLWidget->setScissorTestX(tmp);
+}
+
+void MainWindow::setScissorYValue(int value)
+{
+    double tmp = (double) value;
+    ui->scissorTestYLcdNumber->display(tmp);
+    ui->fieldGLWidget->setScissorTestY(tmp);
+}
+
+void MainWindow::setScissorWValue(int value)
+{
+    double tmp = (double) value;
+    ui->scissorTestWLcdNumber->display(tmp);
+    ui->fieldGLWidget->setScissorTestW(tmp);
+}
+
+void MainWindow::setScissorHValue(int value)
+{
+    double tmp = (double) value;
+    ui->scissorTestHLcdNumber->display(tmp);
+    ui->fieldGLWidget->setScissorTestH(tmp);
 }

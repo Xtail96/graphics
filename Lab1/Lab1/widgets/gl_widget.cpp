@@ -183,8 +183,8 @@ void GL_Widget::figuresGL(){
     }
 }
 
-void GL_Widget::startDrawing(){
-
+void GL_Widget::startDrawing()
+{
     switch (m_filter) {
     case 1:
         glEnable(GL_ALPHA_TEST);
