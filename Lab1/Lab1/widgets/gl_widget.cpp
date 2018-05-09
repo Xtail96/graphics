@@ -3,392 +3,144 @@
 GL_Widget::GL_Widget(QWidget *parent):
     QGLWidget(parent)
 {
-    m_primitiveIndex=0;
     setGeometry(20, 20, 550, 500);
-
-    int pointsCount = 50;
-
-    double floor = -0.9;
-    double up = 0.9;
-
-    for(int i = 0; i < pointsCount; i++)
-    {
-        Point3Df tmp;
-        tmp.x = (double) (rand()) / RAND_MAX * (up - floor) + floor;
-        tmp.y = (double) (rand()) / RAND_MAX * (up - floor) + floor;
-        tmp.z = (double) (rand()) / RAND_MAX * (up - floor) + floor;
-        tmp.red = (double) (rand()) / RAND_MAX;
-        tmp.green = (double) (rand()) / RAND_MAX;
-        tmp.blue = (double) (rand()) / RAND_MAX;
-        tmp.alpha = (double) (rand()) / RAND_MAX;
-        m_points.push_back(tmp);
-    }
-
 }
 
 void GL_Widget::initializeGL(){
-    glClearColor(0.913, 0.933, 0.996, 1);
+    //glClearColor(0.913, 0.933, 0.996, 1);
+    //glViewport(0, 0, this->width(), this->height());
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void GL_Widget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT);
-    startDrawing();
+
+    //glViewport(0, 0, 1, 1);
+
+    //Задаем режим матрицы
+    glMatrixMode(GL_PROJECTION);
+
+    //Загружаем матрицу
+    glLoadIdentity();
+
+    move();
+    glScalef(m_scale, m_scale, m_scale);
+
+    /*glBegin(GL_LINES);
+    glColor3f(1, 1, 1);
+    glVertex3f(0, 0, 0);
+    glVertex3f(1, 0, 0);
+    glEnd();*/
+
+    drawLeafFractal(0, -300, 200, -M_PI/2, 10);
 }
 
-void GL_Widget::figuresGL(){
-    switch (m_primitiveIndex) {
-    case 0:
+void GL_Widget::drawLeafFractal(double x, double y, double l, double angle, int step)
+{
+    if(l > 1)
     {
-        glPointSize(5);
-        glBegin(GL_POINTS);
+        step--;
+        lineTo(x, y, l, angle);
+        x = std::round(x + l * cos(angle));
+        y = std::round(y - l * sin(angle));
 
+        drawLeafFractal(x, y, l*0.4, angle - M_PI/4, step);
+        drawLeafFractal(x, y, l*0.4, angle + M_PI/4, step);
+        drawLeafFractal(x, y, l*0.7, angle, step);
+    }
+}
 
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
+void GL_Widget::lineTo(double x, double y, double l, double angle)
+{
+    double newX = std::round(x + l * cos(angle));
+    double newY = std::round(y - l * sin(angle));
 
-        glEnd();
+    qDebug() << newX << newY;
 
-        break;
-    };
-    case 1:
+    glBegin(GL_LINES);
+        glVertex2f(x, y);
+        glVertex2f(newX, newY);
+    glEnd();
+
+    //Line(x, y, Round(x + l * cos(u)), Round(y - l * sin(u)));
+}
+
+void GL_Widget::wheelEvent(QWheelEvent *wheelEvent)
+{
+    scaling(wheelEvent->delta());
+}
+
+void GL_Widget::scaling(int delta)
+{
+    // если колесико вращаем вперед -- умножаем переменную масштаба на 1.1
+    // иначе - делим на 1.1
+    if (delta > 0)
     {
-        glLineWidth(5);
-        glBegin(GL_LINES);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
- break;
-    };
-    case 2:{
-
-        glLineWidth(5);
-        glBegin(GL_LINE_STRIP);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-    break;
-    };
-    case 3:{
-
-        glLineWidth(5);
-        glBegin(GL_LINE_LOOP);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    case 4:{
-
-        glLineWidth(5);
-        glBegin(GL_TRIANGLES);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    case 5:{
-
-        glLineWidth(5);
-        glBegin(GL_TRIANGLE_STRIP);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    case 6:{
-        glBegin(GL_TRIANGLE_FAN);
-        glLineWidth(5);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    case 7:{
-
-        glLineWidth(5);
-        glBegin(GL_QUADS);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    case 8:{
-
-        glLineWidth(5);
-        glBegin(GL_QUAD_STRIP);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    case 9:{
-
-        glLineWidth(5);
-        glBegin(GL_POLYGON);
-
-        for(auto point : m_points)
-        {
-            glColor4f(point.red, point.green, point.blue, point.alpha);
-            glVertex3f(point.x, point.y, point.z);
-        }
-
-        glEnd();
-        break;
-    };
-    default:
-        break;
+        m_scale *= 1.1;
     }
+    else
+    {
+        if (delta < 0)
+        {
+            m_scale /= 1.1;
+        }
+    }
+    updateGL();
 }
 
-void GL_Widget::startDrawing()
+void GL_Widget::move()
 {
-    switch (m_filter) {
-    case 1:
-        glEnable(GL_ALPHA_TEST);
-        opacityTestEnable();
-        figuresGL();
-        glDisable(GL_ALPHA_TEST);
-        break;
-    case 2:
-        glEnable(GL_BLEND);
-        blendTestEnable();
-        figuresGL();
-        glDisable(GL_BLEND);
-        break;
-    case 3:
-        glEnable(GL_SCISSOR_TEST);
-        scissorTestEnable();
-        figuresGL();
-        glDisable(GL_SCISSOR_TEST);
-        break;
-    case 4:
-        glEnable(GL_ALPHA_TEST);
-        opacityTestEnable();
-        glEnable(GL_BLEND);
-        blendTestEnable();
-        glEnable(GL_SCISSOR_TEST);
-        scissorTestEnable();
-        figuresGL();
-        glDisable(GL_SCISSOR_TEST);
-        glDisable(GL_BLEND);
-        glDisable(GL_ALPHA_TEST);
-        break;
-    default:
-        figuresGL();
-        break;
-    }
+    glTranslatef(0.5f * m_positionX, -(0.5f * m_positionY), 0);
 }
 
-void GL_Widget::opacityTestEnable()
+void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
-    switch (m_alphaTestIndex) {
-    case 0:
-        glAlphaFunc(GL_NEVER, m_alphaTestValue);
-        break;
-    case 1:
-        glAlphaFunc(GL_LESS, m_alphaTestValue);
-        break;
-    case 3:
-        glAlphaFunc(GL_EQUAL, m_alphaTestValue);
-        break;
-    case 4:
-        glAlphaFunc(GL_LEQUAL, m_alphaTestValue);
-        break;
-    case 5:
-        glAlphaFunc(GL_GREATER, m_alphaTestValue);
-        break;
-    case 6:
-        glAlphaFunc(GL_NOTEQUAL, m_alphaTestValue);
-        break;
-    case 7:
-        glAlphaFunc(GL_ALWAYS, m_alphaTestValue);
-        break;
-    default:
-        glDisable(GL_ALPHA_TEST);
-        break;
-    }
-}
+    double dx = (mouseEvent->x() - m_mousePositionX) / 10;
+    double dy = (mouseEvent->y() - m_mousePositionY) / 10;
 
-void GL_Widget::blendTestEnable()
-{
-    GLenum sfactor;
-    GLenum dfactor;
-
-    switch (m_blendTestIndexFirst) {
-    case 0:
-        sfactor = GL_ZERO;
-        break;
-    case 1:
-        sfactor = GL_ONE;
-        break;
-    case 2:
-        sfactor = GL_DST_COLOR;
-        break;
-    case 3:
-        sfactor = GL_ONE_MINUS_DST_COLOR;
-        break;
-    case 4:
-        sfactor = GL_SRC_ALPHA;
-        break;
-    case 5:
-        sfactor = GL_ONE_MINUS_SRC_ALPHA;
-        break;
-    case 6:
-        sfactor = GL_DST_ALPHA;
-        break;
-    case 7:
-        sfactor = GL_ONE_MINUS_DST_ALPHA;
-        break;
-    case 8:
-        sfactor = GL_SRC_ALPHA_SATURATE;
-        break;
-    default:
-        //glDisable(GL_BLEND);
-        break;
+    if (mouseEvent->buttons() == Qt::LeftButton)
+    {
+        setPositionX(m_positionX + dx/1000);
+        setPositionY(m_positionY + dy/1000);
     }
 
-    switch (m_blendTestIndexSecond) {
-    case 0:
-        dfactor = GL_ZERO;
-        break;
-    case 1:
-        dfactor = GL_ONE;
-        break;
-    case 2:
-        dfactor = GL_DST_COLOR;
-        break;
-    case 3:
-        dfactor = GL_ONE_MINUS_DST_COLOR;
-        break;
-    case 4:
-        dfactor = GL_SRC_ALPHA;
-        break;
-    case 5:
-        dfactor = GL_ONE_MINUS_SRC_ALPHA;
-        break;
-    case 6:
-        dfactor = GL_DST_ALPHA;
-        break;
-    case 7:
-        dfactor = GL_ONE_MINUS_DST_ALPHA;
-        break;
-    case 8:
-        dfactor = GL_SRC_ALPHA_SATURATE;
-        break;
-    default:
-        //glDisable(GL_BLEND);
-        break;
-    }
-
-    //qDebug() << m_blendTestIndexFirst << m_blendTestIndexSecond;
-
-    glBlendFunc(sfactor, dfactor);
+    updateGL();
 }
 
-void GL_Widget::scissorTestEnable()
+void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
 {
-    glScissor(m_scissorTestX, m_scissporTestY, m_scissorTestW, m_scissorTestH);
+    m_mousePositionX = mouseEvent->x();
+    m_mousePositionY = mouseEvent->y();
 }
 
-void GL_Widget::setPrimitive(int p){
-    this->m_primitiveIndex = p;
-    this->updateGL();
-}
-
-void GL_Widget::setAlphaTestIndex(int alphaTestIndex)
+void GL_Widget::setPositionX(double value)
 {
-    m_alphaTestIndex = alphaTestIndex;
-    this->updateGL();
+    m_positionX = value;
 }
 
-void GL_Widget::setAlphaTestValue(int alphaTestValue)
+void GL_Widget::setPositionY(double value)
 {
-    m_alphaTestValue =  (double) alphaTestValue / 100;
-    this->updateGL();
+    m_positionY = value;
 }
 
-void GL_Widget::setBlendTestIndexFirst(int blendTestIndexFirst)
+void GL_Widget::drawLine(Point2Df begin, Point2Df end)
 {
-    m_blendTestIndexFirst = blendTestIndexFirst;
-    this->updateGL();
+    glVertex2f(begin.m_x, begin.m_y);
+    glVertex2f(end.m_x, end.m_y);
 }
 
-void GL_Widget::setBlendTestIndexSecond(int blendTestIndexSecond)
+Point2Df GL_Widget::rotateMatrix(Point2Df point, double angle, Point2Df offset)
 {
-    m_blendTestIndexSecond = blendTestIndexSecond;
-    this->updateGL();
-}
+    double radian = angle * (M_PI/180);
 
-void GL_Widget::setScissorTestX(int scissorTestX)
-{
-    m_scissorTestX = (double) scissorTestX;
-    this->updateGL();
-}
+    Point2Df res;
 
-void GL_Widget::setScissorTestY(int scissporTestY)
-{
-    m_scissporTestY = (double) scissporTestY;
-    this->updateGL();
-}
+    res.m_x = point.m_x * cos(radian) - point.m_y * sin(radian) + offset.m_x;
+    res.m_y = point.m_x * sin(radian) + point.m_y * cos(radian) + offset.m_y;
 
-void GL_Widget::setScissorTestW(int scissorTestW)
-{
-    m_scissorTestW = (double) scissorTestW;
-    this->updateGL();
+    return res;
 }
-
-void GL_Widget::setScissorTestH(int scissorTestH)
-{
-    m_scissorTestH = (double) scissorTestH;
-    this->updateGL();
-}
-
-void GL_Widget::setFilter(int filters)
-{
-    m_filter = filters;
-    this->updateGL();
-}
-

@@ -1,8 +1,13 @@
 #ifndef GL_WINDGET_H
 #define GL_WINDGET_H
 
+#include <cmath>
+
 #include <QGLWidget>
 #include <QDebug>
+#include <QMouseEvent>
+
+//#include <fractset.h>
 
 struct Point3Df
 {
@@ -15,48 +20,59 @@ struct Point3Df
     double alpha;
 };
 
+struct Point2Df
+{
+    double m_x;
+    double m_y;
+    Point2Df(double x = 0.0, double y = 0.0) : m_x(x), m_y(y) {}
+};
+
 class GL_Widget: public QGLWidget
 {
     Q_OBJECT
 private:
-    int m_primitiveIndex;
-    QList<Point3Df> m_points;
+    // Lab3
+    Point2Df m_startPoint;
+    double m_scale = 0.0015;
 
-    int m_filter = 0;
+    int m_mousePositionX = 0;
 
-    int m_alphaTestIndex = -1;
-    double m_alphaTestValue = -1;
+    int m_mousePositionY = 0;
 
-    int m_blendTestIndexFirst = -1;
-    int m_blendTestIndexSecond = -1;
+    double m_positionX = 0;
 
-    int m_scissorTestX = -1;
-    int m_scissporTestY = -1;
-    int m_scissorTestW = -1;
-    int m_scissorTestH = -1;
+    double m_positionY = 0;
 
 public:
     explicit GL_Widget(QWidget *parent = 0);
-    void initializeGL();
-    void paintGL();
-    void figuresGL();
-    void startDrawing();
 
-    void opacityTestEnable();
-    void blendTestEnable();
-    void scissorTestEnable();
+    void initializeGL();
+
+    void paintGL();
 
 public slots:
-    void setPrimitive(int p);
-    void setFilter(int filters);
-    void setAlphaTestIndex(int alphaTestIndex);
-    void setAlphaTestValue(int alphaTestValue);
-    void setBlendTestIndexFirst(int blendTestIndexFirst);
-    void setBlendTestIndexSecond(int blendTestIndexSecond);
-    void setScissorTestX(int scissorTestX);
-    void setScissorTestY(int scissporTestY);
-    void setScissorTestW(int scissorTestW);
-    void setScissorTestH(int scissorTestH);
+    void drawLeafFractal(double x, double y, double l, double angle, int step);
+
+    void wheelEvent(QWheelEvent *wheelEvent);
+
+    void mouseMoveEvent(QMouseEvent *mouseEvent);
+
+    void mousePressEvent(QMouseEvent *mouseEvent);
+
+    void setPositionX(double value);
+
+    void setPositionY(double value);
+
+protected slots:
+    void drawLine(Point2Df begin, Point2Df end);
+
+    Point2Df rotateMatrix(Point2Df point, double angle, Point2Df offset = Point2Df());
+
+    void lineTo(double x, double y, double l, double angle);
+
+    void scaling(int delta);
+
+    void move();
 };
 
 #endif // GL_WINDGET_H

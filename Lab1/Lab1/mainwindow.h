@@ -22,16 +22,6 @@ private:
     Ui::MainWindow *ui;
 
 protected slots:
-    void activateAlphaTest();
-    void activateBlendTest();
-    void activateScissorTest();
-    void activateTest(int index);
-
-    void setOpacityValue(int value);
-    void setScissorXValue(int value);
-    void setScissorYValue(int value);
-    void setScissorWValue(int value);
-    void setScissorHValue(int value);
 private slots:
 };
 
