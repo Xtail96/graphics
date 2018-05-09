@@ -36,21 +36,31 @@ void GL_Widget::paintGL(){
     glVertex3f(1, 0, 0);
     glEnd();*/
 
-    drawLeafFractal(0, -300, 200, -M_PI/2, 10);
+    drawLeafFractal(m_startPoint.m_x, m_startPoint.m_y, m_l, m_angle, "left");
 }
 
-void GL_Widget::drawLeafFractal(double x, double y, double l, double angle, int step)
+void GL_Widget::drawLeafFractal(double x, double y, double l, double angle, QString side)
 {
     if(l > 1)
     {
-        step--;
         lineTo(x, y, l, angle);
         x = std::round(x + l * cos(angle));
         y = std::round(y - l * sin(angle));
 
-        drawLeafFractal(x, y, l*0.4, angle - M_PI/4, step);
-        drawLeafFractal(x, y, l*0.4, angle + M_PI/4, step);
-        drawLeafFractal(x, y, l*0.7, angle, step);
+        if(side == "left")
+        {
+
+            drawLeafFractal(x, y, l*0.5, angle - M_PI/4, "right");
+            //drawLeafFractal(x, y, l*0.4, angle + M_PI/4, "left");
+            drawLeafFractal(x, y, l*0.8, angle, "right");
+        }
+        else
+        {
+            //drawLeafFractal(x, y, l*0.4, angle - M_PI/4, "left");
+            drawLeafFractal(x, y, l*0.5, angle + M_PI/4, "left");
+            drawLeafFractal(x, y, l*0.8, angle, "left");
+        }
+
     }
 }
 
@@ -59,7 +69,7 @@ void GL_Widget::lineTo(double x, double y, double l, double angle)
     double newX = std::round(x + l * cos(angle));
     double newY = std::round(y - l * sin(angle));
 
-    qDebug() << newX << newY;
+    //qDebug() << newX << newY;
 
     glBegin(GL_LINES);
         glVertex2f(x, y);
@@ -127,6 +137,24 @@ void GL_Widget::setPositionY(double value)
     m_positionY = value;
 }
 
+void GL_Widget::setStartPoint(double x, double y)
+{
+    m_startPoint = Point2Df(x, y);
+    updateGL();
+}
+
+void GL_Widget::setL(int value)
+{
+    m_l = value;
+    updateGL();
+}
+
+void GL_Widget::setAngle(double gradValue)
+{
+    m_angle = (180/M_PI) * gradValue;
+    updateGL();
+}
+
 void GL_Widget::drawLine(Point2Df begin, Point2Df end)
 {
     glVertex2f(begin.m_x, begin.m_y);
@@ -143,4 +171,19 @@ Point2Df GL_Widget::rotateMatrix(Point2Df point, double angle, Point2Df offset)
     res.m_y = point.m_x * sin(radian) + point.m_y * cos(radian) + offset.m_y;
 
     return res;
+}
+
+double GL_Widget::angle() const
+{
+    return m_angle* (M_PI/180);
+}
+
+size_t GL_Widget::l() const
+{
+    return m_l;
+}
+
+std::pair<double, double> GL_Widget::startPoint() const
+{
+    return std::make_pair(m_startPoint.m_x, m_startPoint.m_y);
 }

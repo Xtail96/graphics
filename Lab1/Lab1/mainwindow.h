@@ -23,6 +23,8 @@ private:
 
 protected slots:
 private slots:
+    void on_angleLineEdit_returnPressed();
+    void on_branchLineEdit_returnPressed();
 };
 
 #endif // MAINWINDOW_H

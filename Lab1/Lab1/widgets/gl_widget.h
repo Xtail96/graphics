@@ -32,7 +32,10 @@ class GL_Widget: public QGLWidget
     Q_OBJECT
 private:
     // Lab3
-    Point2Df m_startPoint;
+    Point2Df m_startPoint = Point2Df(0.0, -500);
+    double m_angle = -M_PI/2;
+    size_t m_l = 200;
+
     double m_scale = 0.0015;
 
     int m_mousePositionX = 0;
@@ -51,7 +54,7 @@ public:
     void paintGL();
 
 public slots:
-    void drawLeafFractal(double x, double y, double l, double angle, int step);
+    void drawLeafFractal(double x, double y, double l, double angle, QString side);
 
     void wheelEvent(QWheelEvent *wheelEvent);
 
@@ -62,6 +65,18 @@ public slots:
     void setPositionX(double value);
 
     void setPositionY(double value);
+
+    void setStartPoint(double x, double y);
+
+    void setL(int value);
+
+    void setAngle(double gradValue);
+
+    double angle() const;
+
+    size_t l() const;
+
+    std::pair<double, double> startPoint() const;
 
 protected slots:
     void drawLine(Point2Df begin, Point2Df end);
