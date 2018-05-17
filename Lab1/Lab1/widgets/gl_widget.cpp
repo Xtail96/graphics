@@ -69,17 +69,17 @@ void GL_Widget::move()
 
 void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
-    double dx = (mouseEvent->x() / 350 - m_mousePositionX) / 10;
-    double dy = (mouseEvent->y() / 350 - m_mousePositionY) / 10;
+    double dx = (double) (mouseEvent->x() - m_mousePositionX) / (10 * (this->width() / 2));
+    double dy = (double) (mouseEvent->y() - m_mousePositionY) / (10 * (this->height() / 2));
 
-    //qDebug() << m_debugPointIndex << dx << dy;
+    qDebug() << m_debugPointIndex << dx << dy;
 
     if(m_debugMode)
     {
         if(m_debugPointIndex > 0 && m_debugPointIndex < m_points.size())
         {
             m_points[m_debugPointIndex].m_x += dx;
-            m_points[m_debugPointIndex].m_y += dy;
+            m_points[m_debugPointIndex].m_y -= dy;
         }
     }
 
@@ -190,7 +190,7 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
         }
     }
 
-    qDebug() << m_debugPointIndex;
+    //qDebug() << m_debugPointIndex;
 
     updateGL();
 }
