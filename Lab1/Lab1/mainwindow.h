@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include <QDebug>
 
-enum tests {NONE, ALPHA_TEST, BLEND_TEST, SCISSOR_TEST, ALL_TEST};
-
 namespace Ui {
 class MainWindow;
 }
@@ -23,8 +21,6 @@ private:
 
 protected slots:
 private slots:
-    void on_angleLineEdit_returnPressed();
-    void on_branchLineEdit_returnPressed();
 };
 
 #endif // MAINWINDOW_H

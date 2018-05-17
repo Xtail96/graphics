@@ -7,36 +7,54 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-//#include <fractset.h>
+/*class Point2Df{
+public:
+    float x, y;
+    void setxy(float x2, float y2)
+    {
+        x = x2; y = y2;
+    }
+    //operator overloading for '=' sign
+    const Point2Df& operator=(const Point2Df&rPoint)
+    {
+        x = rPoint.x;
+        y = rPoint.y;
+        return *this;
+    }
 
-struct Point3Df
-{
-    double x;
-    double y;
-    double z;
-    double red;
-    double green;
-    double blue;
-    double alpha;
-};
+};*/
 
 struct Point2Df
 {
     double m_x;
     double m_y;
     Point2Df(double x = 0.0, double y = 0.0) : m_x(x), m_y(y) {}
+
+    const Point2Df & operator=(const Point2Df &rPoint)
+    {
+        m_x = rPoint.m_x;
+        m_y = rPoint.m_y;
+        return *this;
+    }
+
+    void setxy(float x, float y)
+        {
+            m_x = x; m_y = y;
+        }
 };
+
+/*void myDisplay() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glFlush();
+}*/
 
 class GL_Widget: public QGLWidget
 {
     Q_OBJECT
 private:
-    // Lab3
-    Point2Df m_startPoint = Point2Df(0.0, -500);
-    double m_angle = -M_PI/2;
-    size_t m_l = 200;
+    //double m_scale = 0.0015;
 
-    double m_scale = 0.0015;
+    double m_scale = 1;
 
     int m_mousePositionX = 0;
 
@@ -46,6 +64,13 @@ private:
 
     double m_positionY = 0;
 
+    QList<Point2Df> m_points;
+
+    Point2Df abc[20];
+    int SCREEN_HEIGHT = 700;
+    int points = 0;
+    int clicks = 7;
+
 public:
     explicit GL_Widget(QWidget *parent = 0);
 
@@ -54,9 +79,8 @@ public:
     void paintGL();
 
 public slots:
-    void drawLeafFractal(double x, double y, double l, double angle, QString side);
 
-    void wheelEvent(QWheelEvent *wheelEvent);
+    //void wheelEvent(QWheelEvent *wheelEvent);
 
     void mouseMoveEvent(QMouseEvent *mouseEvent);
 
@@ -66,28 +90,58 @@ public slots:
 
     void setPositionY(double value);
 
-    void setStartPoint(double x, double y);
-
-    void setL(int value);
-
-    void setAngle(double gradValue);
-
-    double angle() const;
-
-    size_t l() const;
-
-    std::pair<double, double> startPoint() const;
-
 protected slots:
+    //void scaling(int delta);
+
+    void move();
+
+public slots:
     void drawLine(Point2Df begin, Point2Df end);
+    void drawPoint(double x, double y);
+    void drawPoint(Point2Df point);
+
+    void drawCurve();
 
     Point2Df rotateMatrix(Point2Df point, double angle, Point2Df offset = Point2Df());
 
-    void lineTo(double x, double y, double l, double angle);
+    //Calculate the bezier point [generalized]
+    Point2Df drawBezierGeneralized(Point2Df PT[], double t) {
+        Point2Df P;
+        P.m_x = 0; P.m_y = 0;
+        for (int i = 0; i < clicks; i++)
+        {
+            P.m_x = P.m_x + binomial_coff((float)(clicks - 1), (float)i) * pow(t, (double)i) * pow((1 - t), (clicks - 1 - i)) * PT[i].m_x;
+            P.m_y = P.m_y + binomial_coff((float)(clicks - 1), (float)i) * pow(t, (double)i) * pow((1 - t), (clicks - 1 - i)) * PT[i].m_y;
+        }
+        //cout<<P.x<<endl<<P.y;
+        //cout<<endl<<endl;
+        return P;
+    }
 
-    void scaling(int delta);
+    //Calculate the bezier point
+    Point2Df drawBezier(Point2Df PT[], double t) {
+        Point2Df P;
+        P.m_x = pow((1 - t), 3) * PT[0].m_x + 3 * t * pow((1 - t), 2) * PT[1].m_x + 3 * (1 - t) * pow(t, 2)* PT[2].m_x + pow(t, 3)* PT[3].m_x;
+        P.m_y = pow((1 - t), 3) * PT[0].m_y + 3 * t * pow((1 - t), 2) * PT[1].m_y + 3 * (1 - t) * pow(t, 2)* PT[2].m_y + pow(t, 3)* PT[3].m_y;
 
-    void move();
+        return P;
+    }
+
+    int factorial(int n)
+    {
+        if (n <= 1)
+            return(1);
+        else
+            n = n * factorial(n - 1);
+        return n;
+    }
+
+    float binomial_coff(float n, float k)
+    {
+        float ans;
+        ans = factorial(n) / (factorial(k)*factorial(n - k));
+        return ans;
+    }
 };
 
 #endif // GL_WINDGET_H

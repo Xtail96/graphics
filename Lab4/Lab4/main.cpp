@@ -55,7 +55,6 @@ void myInit() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluOrtho2D(0.0, 800.0, 0.0, 700.0);
-
 }
 
 void drawDot(int x, int y) {
