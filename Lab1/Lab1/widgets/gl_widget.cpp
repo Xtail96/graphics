@@ -1,5 +1,16 @@
 #include "gl_widget.h"
 
+int GL_Widget::getCurvePointCount() const
+{
+    return curvePointCount;
+}
+
+void GL_Widget::setCurvePointCount(int value)
+{
+    curvePointCount = value;
+    updateGL();
+}
+
 GL_Widget::GL_Widget(QWidget *parent):
     QGLWidget(parent)
 {
@@ -93,6 +104,12 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
     //qDebug() << x << y << center.m_x << center.m_y;
 
 
+    if(m_points.size() >= curvePointCount)
+    {
+        m_points.clear();
+        currentPointIndex = 0;
+    }
+
     Point2Df point(x, y);
     m_points.push_back(point);
 
@@ -172,9 +189,6 @@ void GL_Widget::drawCurve()
             p1 = p2;
         }
         glColor3f(0.0, 0.0, 0.0);
-
-        currentPointIndex = 0;
-        m_points.clear();
     }
 }
 

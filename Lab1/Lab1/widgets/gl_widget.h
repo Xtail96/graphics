@@ -76,6 +76,9 @@ public:
 
     void paintGL();
 
+    int getCurvePointCount() const;
+    void setCurvePointCount(int value);
+
 public slots:
 
     //void wheelEvent(QWheelEvent *wheelEvent);
