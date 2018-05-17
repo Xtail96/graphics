@@ -95,33 +95,11 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
 
     Point2Df point(x, y);
     m_points.push_back(point);
-    updateGL();
 
     abc[points].setxy((float) x, (float) y);
     points++;
 
-    // Draw the red  dot.
-    //qDebug() << m_mousePositionX << m_mousePositionY;
-    //drawPoint(m_mousePositionX, m_mousePositionX);
-
-    /*if (points == clicks)
-    {
-        glColor3f(0.2, 1.0, 0.0);
-
-        Point2Df p1 = abc[0];
-        for (double t = 0.0; t <= 1.0; t += 0.02)
-        {
-            Point2Df p2 = drawBezierGeneralized(abc, t);
-            qDebug() << p1.m_x << "  ,  " << p1.m_y;
-            qDebug() << p2.m_x << "  ,  " << p2.m_y;
-            drawLine(p1, p2);
-            p1 = p2;
-        }
-        glColor3f(0.0, 0.0, 0.0);
-
-        points = 0;
-    }*/
-   //updateGL();
+    updateGL();
 }
 
 void GL_Widget::setPositionX(double value)
@@ -179,8 +157,8 @@ void GL_Widget::drawCurve()
         for (double t = 0.0; t <= 1.0; t += 0.02)
         {
             Point2Df p2 = drawBezierGeneralized(abc, t);
-            qDebug() << p1.m_x << "  ,  " << p1.m_y;
-            qDebug() << p2.m_x << "  ,  " << p2.m_y;
+            qDebug() << p1.m_x << "," << p1.m_y;
+            qDebug() << p2.m_x << "," << p2.m_y;
             drawLine(p1, p2);
             p1 = p2;
         }

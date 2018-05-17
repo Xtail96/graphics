@@ -67,9 +67,8 @@ private:
     QList<Point2Df> m_points;
 
     Point2Df abc[20];
-    int SCREEN_HEIGHT = 700;
     int points = 0;
-    int clicks = 7;
+    int clicks = 4;
 
 public:
     explicit GL_Widget(QWidget *parent = 0);
