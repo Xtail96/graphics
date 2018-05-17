@@ -72,7 +72,7 @@ void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
     double dx = (double) (mouseEvent->x() - m_mousePositionX) / (10 * (this->width() / 2));
     double dy = (double) (mouseEvent->y() - m_mousePositionY) / (10 * (this->height() / 2));
 
-    qDebug() << m_debugPointIndex << dx << dy;
+    //qDebug() << m_debugPointIndex << dx << dy;
 
     if(m_debugMode)
     {
@@ -87,7 +87,7 @@ void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 
     updateGL();
 
-    if(m_debugMode)
+    /*if(m_debugMode)
     {
         Point2Df center((double) this->width() / 2, (double) this->height() / 2);
         double x = (double) (m_mousePositionX - center.m_x) / 350;
@@ -115,7 +115,7 @@ void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
         }
 
         updateGL();
-    }
+    }*/
 
     /*double dx = (mouseEvent->x() - m_mousePositionX) / 10;
     double dy = (mouseEvent->y() - m_mousePositionY) / 10;
