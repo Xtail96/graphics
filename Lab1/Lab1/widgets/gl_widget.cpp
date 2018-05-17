@@ -149,10 +149,17 @@ void GL_Widget::drawCurve()
 {
     if(currentPointIndex == curvePointCount)
     {
-        glColor3f(0.2, 1.0, 0.0);
         // Drawing the control lines
-        //for (int k = 0; k<clicks - 1; k++)
-        //drawLine(abc[k], abc[k + 1]);
+        glColor3f(0.0, 0.0, 1.0);
+        glLineWidth(1);
+        for (int i = 0; i < curvePointCount - 1; i++)
+        {
+            drawLine(m_points[i], m_points[i+1]);
+        }
+
+
+        glColor3f(0.2, 1.0, 0.0);
+        glLineWidth(5);
 
         Point2Df p1 = m_points[0];
         /* Draw each segment of the curve.Make t increment in smaller amounts for a more detailed curve.*/
@@ -167,6 +174,7 @@ void GL_Widget::drawCurve()
         glColor3f(0.0, 0.0, 0.0);
 
         currentPointIndex = 0;
+        m_points.clear();
     }
 }
 
