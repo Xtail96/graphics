@@ -34,13 +34,9 @@ void MainWindow::on_applyPushButton_clicked()
     {
         ui->pointsCountLineEdit->setText(QString::number(currentPointCount));
     }
+}
 
-    if(ui->debugCheckBox->isChecked())
-    {
-        ui->fieldGLWidget->setDebugMode(true);
-    }
-    else
-    {
-        ui->fieldGLWidget->setDebugMode(false);
-    }
+void MainWindow::on_debugCheckBox_clicked()
+{
+    ui->fieldGLWidget->setDebugMode(ui->debugCheckBox->isChecked());
 }

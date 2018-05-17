@@ -158,7 +158,7 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
     }
     else
     {
-        for(int i = 0; i < m_points.size(); i++)
+        /*for(int i = 0; i < m_points.size(); i++)
         {
             double deltaX = abs(m_points[i].m_x - x);
             double deltaY = abs(m_points[i].m_y - x);
@@ -172,9 +172,9 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
             }
         }
 
-        qDebug() << "---";
+        qDebug() << "---";*/
 
-        /*double deltaX = INT_MAX;
+        double deltaX = INT_MAX;
         double deltaY = INT_MAX;
 
         for(int i = 0; i < m_points.size(); i++)
@@ -183,10 +183,14 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
             double currentDeltaY = abs(m_points[i].m_y - y);
             if(currentDeltaX < deltaX && currentDeltaY < deltaY)
             {
+                deltaX = currentDeltaX;
+                deltaY = currentDeltaY;
                 m_debugPointIndex = i;
             }
-        }*/
+        }
     }
+
+    qDebug() << m_debugPointIndex;
 
     updateGL();
 }
