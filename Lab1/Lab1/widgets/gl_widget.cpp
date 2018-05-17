@@ -44,7 +44,7 @@ void GL_Widget::paintGL(){
     //Загружаем матрицу
     glLoadIdentity();
 
-    move();
+    //move();
 
     for(auto point : m_points) {
         drawPoint(point);
@@ -96,8 +96,10 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
     Point2Df point(x, y);
     m_points.push_back(point);
 
-    abc[points].setxy((float) x, (float) y);
-    points++;
+    m_points[currentPointIndex].m_x = x;
+    m_points[currentPointIndex].m_y = y;
+
+    currentPointIndex++;
 
     updateGL();
 }
@@ -145,18 +147,18 @@ void GL_Widget::drawPoint(Point2Df point)
 
 void GL_Widget::drawCurve()
 {
-    if(points == clicks)
+    if(currentPointIndex == curvePointCount)
     {
         glColor3f(0.2, 1.0, 0.0);
         // Drawing the control lines
         //for (int k = 0; k<clicks - 1; k++)
         //drawLine(abc[k], abc[k + 1]);
 
-        Point2Df p1 = abc[0];
+        Point2Df p1 = m_points[0];
         /* Draw each segment of the curve.Make t increment in smaller amounts for a more detailed curve.*/
         for (double t = 0.0; t <= 1.0; t += 0.02)
         {
-            Point2Df p2 = drawBezierGeneralized(abc, t);
+            Point2Df p2 = drawBezierGeneralized(m_points, t);
             qDebug() << p1.m_x << "," << p1.m_y;
             qDebug() << p2.m_x << "," << p2.m_y;
             drawLine(p1, p2);
@@ -164,7 +166,7 @@ void GL_Widget::drawCurve()
         }
         glColor3f(0.0, 0.0, 0.0);
 
-        points = 0;
+        currentPointIndex = 0;
     }
 }
 

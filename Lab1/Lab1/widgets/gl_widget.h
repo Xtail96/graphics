@@ -66,9 +66,8 @@ private:
 
     QList<Point2Df> m_points;
 
-    Point2Df abc[20];
-    int points = 0;
-    int clicks = 4;
+    int currentPointIndex = 0;
+    int curvePointCount = 4;
 
 public:
     explicit GL_Widget(QWidget *parent = 0);
@@ -104,26 +103,24 @@ public slots:
     Point2Df rotateMatrix(Point2Df point, double angle, Point2Df offset = Point2Df());
 
     //Calculate the bezier point [generalized]
-    Point2Df drawBezierGeneralized(Point2Df PT[], double t) {
-        Point2Df P;
-        P.m_x = 0; P.m_y = 0;
-        for (int i = 0; i < clicks; i++)
+    Point2Df drawBezierGeneralized(QList<Point2Df> pointsList, double t) {
+        Point2Df bezierPoint;
+        bezierPoint.m_x = 0; bezierPoint.m_y = 0;
+        for (int i = 0; i < curvePointCount; i++)
         {
-            P.m_x = P.m_x + binomial_coff((float)(clicks - 1), (float)i) * pow(t, (double)i) * pow((1 - t), (clicks - 1 - i)) * PT[i].m_x;
-            P.m_y = P.m_y + binomial_coff((float)(clicks - 1), (float)i) * pow(t, (double)i) * pow((1 - t), (clicks - 1 - i)) * PT[i].m_y;
+            bezierPoint.m_x = bezierPoint.m_x + binomial_coff((float)(curvePointCount - 1), (float)i) * pow(t, (double)i) * pow((1 - t), (curvePointCount - 1 - i)) * pointsList[i].m_x;
+            bezierPoint.m_y = bezierPoint.m_y + binomial_coff((float)(curvePointCount - 1), (float)i) * pow(t, (double)i) * pow((1 - t), (curvePointCount - 1 - i)) * pointsList[i].m_y;
         }
-        //cout<<P.x<<endl<<P.y;
-        //cout<<endl<<endl;
-        return P;
+        return bezierPoint;
     }
 
     //Calculate the bezier point
-    Point2Df drawBezier(Point2Df PT[], double t) {
-        Point2Df P;
-        P.m_x = pow((1 - t), 3) * PT[0].m_x + 3 * t * pow((1 - t), 2) * PT[1].m_x + 3 * (1 - t) * pow(t, 2)* PT[2].m_x + pow(t, 3)* PT[3].m_x;
-        P.m_y = pow((1 - t), 3) * PT[0].m_y + 3 * t * pow((1 - t), 2) * PT[1].m_y + 3 * (1 - t) * pow(t, 2)* PT[2].m_y + pow(t, 3)* PT[3].m_y;
+    Point2Df drawBezier(QList<Point2Df> pointsList, double t) {
+        Point2Df bezierCurvePoint;
+        bezierCurvePoint.m_x = pow((1 - t), 3) * pointsList[0].m_x + 3 * t * pow((1 - t), 2) * pointsList[1].m_x + 3 * (1 - t) * pow(t, 2)* pointsList[2].m_x + pow(t, 3)* pointsList[3].m_x;
+        bezierCurvePoint.m_y = pow((1 - t), 3) * pointsList[0].m_y + 3 * t * pow((1 - t), 2) * pointsList[1].m_y + 3 * (1 - t) * pow(t, 2)* pointsList[2].m_y + pow(t, 3)* pointsList[3].m_y;
 
-        return P;
+        return bezierCurvePoint;
     }
 
     int factorial(int n)
