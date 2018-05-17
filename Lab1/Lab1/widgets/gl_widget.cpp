@@ -1,20 +1,9 @@
 #include "gl_widget.h"
 
-int GL_Widget::getCurvePointCount() const
-{
-    return curvePointCount;
-}
-
-void GL_Widget::setCurvePointCount(int value)
-{
-    curvePointCount = value;
-    updateGL();
-}
-
 GL_Widget::GL_Widget(QWidget *parent):
     QGLWidget(parent)
 {
-    //setGeometry(20, 20, 550, 500);
+    setGeometry(20, 20, 550, 500);
 }
 
 void GL_Widget::initializeGL(){
@@ -57,8 +46,9 @@ void GL_Widget::paintGL(){
 
     //move();
 
-    for(auto point : m_points) {
-        drawPoint(point);
+    for(int i = 0; i < m_points.size(); i++)
+    {
+        drawPoint(m_points[i], i);
     }
 
     drawCurve();
@@ -79,7 +69,55 @@ void GL_Widget::move()
 
 void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
-    double dx = (mouseEvent->x() - m_mousePositionX) / 10;
+    double dx = (mouseEvent->x() / 350 - m_mousePositionX) / 10;
+    double dy = (mouseEvent->y() / 350 - m_mousePositionY) / 10;
+
+    //qDebug() << m_debugPointIndex << dx << dy;
+
+    if(m_debugMode)
+    {
+        if(m_debugPointIndex > 0 && m_debugPointIndex < m_points.size())
+        {
+            m_points[m_debugPointIndex].m_x += dx;
+            m_points[m_debugPointIndex].m_y += dy;
+        }
+    }
+
+    //qDebug() << m_debugPointIndex;
+
+    updateGL();
+
+    if(m_debugMode)
+    {
+        Point2Df center((double) this->width() / 2, (double) this->height() / 2);
+        double x = (double) (m_mousePositionX - center.m_x) / 350;
+        double y = (double) (center.m_y - m_mousePositionY) / 350;
+
+        double deltaX = INT_MAX;
+        double deltaY = INT_MAX;
+
+        int pointIndex = -1;
+
+        for(int i = 0; i < m_points.size(); i++)
+        {
+            double currentDeltaX = abs(m_points[i].m_x - x);
+            double currentDeltaY = abs(m_points[i].m_y - y);
+            if(currentDeltaX < deltaX && currentDeltaY < deltaY)
+            {
+                pointIndex = i;
+            }
+        }
+
+        if(pointIndex >= 0 && pointIndex < m_points.size())
+        {
+            m_points[pointIndex].m_x += dx;
+            m_points[pointIndex].m_y += dy;
+        }
+
+        updateGL();
+    }
+
+    /*double dx = (mouseEvent->x() - m_mousePositionX) / 10;
     double dy = (mouseEvent->y() - m_mousePositionY) / 10;
 
     if (mouseEvent->buttons() == Qt::LeftButton)
@@ -88,7 +126,7 @@ void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
         setPositionY(m_positionY + dy/1000);
     }
 
-    updateGL();
+    updateGL();*/
 }
 
 void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
@@ -97,26 +135,58 @@ void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
     m_mousePositionY = mouseEvent->y();
 
     Point2Df center((double) this->width() / 2, (double) this->height() / 2);
+    double x = (double) (m_mousePositionX - center.m_x) / (this->width() / 2);
+    double y = (double) (center.m_y - m_mousePositionY) / (this->height() / 2);
 
-    double x = (double) (m_mousePositionX - center.m_x) / 350;
-    double y = (double) (center.m_y - m_mousePositionY) / 350;
+    //qDebug() << x << y;
 
-    //qDebug() << x << y << center.m_x << center.m_y;
-
-
-    if(m_points.size() >= curvePointCount)
+    if(!m_debugMode)
     {
-        m_points.clear();
-        currentPointIndex = 0;
+        if(m_points.size() >= curvePointCount)
+        {
+            m_points.clear();
+            currentPointIndex = 0;
+        }
+
+        Point2Df point(x, y);
+        m_points.push_back(point);
+
+        m_points[currentPointIndex].m_x = x;
+        m_points[currentPointIndex].m_y = y;
+
+        currentPointIndex++;
     }
+    else
+    {
+        for(int i = 0; i < m_points.size(); i++)
+        {
+            double deltaX = abs(m_points[i].m_x - x);
+            double deltaY = abs(m_points[i].m_y - x);
 
-    Point2Df point(x, y);
-    m_points.push_back(point);
+            qDebug() << "point" + QString::number(i) << deltaX << deltaY;
 
-    m_points[currentPointIndex].m_x = x;
-    m_points[currentPointIndex].m_y = y;
+            if(deltaX < 0.2 && deltaY < 0.2)
+            {
+                m_debugPointIndex = i;
+                break;
+            }
+        }
 
-    currentPointIndex++;
+        qDebug() << "---";
+
+        /*double deltaX = INT_MAX;
+        double deltaY = INT_MAX;
+
+        for(int i = 0; i < m_points.size(); i++)
+        {
+            double currentDeltaX = abs(m_points[i].m_x - x);
+            double currentDeltaY = abs(m_points[i].m_y - y);
+            if(currentDeltaX < deltaX && currentDeltaY < deltaY)
+            {
+                m_debugPointIndex = i;
+            }
+        }*/
+    }
 
     updateGL();
 }
@@ -150,16 +220,17 @@ void GL_Widget::drawPoint(double x, double y)
     glFlush();
 }
 
-void GL_Widget::drawPoint(Point2Df point)
+void GL_Widget::drawPoint(Point2Df point, int index)
 {
     //qDebug() << "point" << point.m_x << point.m_y;
-
     glPointSize(5);
     glBegin(GL_POINTS);
     glColor3f(1.0, 0.0, 0.0);
     glVertex2f(point.m_x, point.m_y);
     glEnd();
     glFlush();
+
+    renderText(point.m_x, point.m_y, 0, QString::number(index));
 }
 
 void GL_Widget::drawCurve()
@@ -183,8 +254,8 @@ void GL_Widget::drawCurve()
         for (double t = 0.0; t <= 1.0; t += 0.02)
         {
             Point2Df p2 = drawBezierGeneralized(m_points, t);
-            qDebug() << p1.m_x << "," << p1.m_y;
-            qDebug() << p2.m_x << "," << p2.m_y;
+            //qDebug() << p1.m_x << "," << p1.m_y;
+            //qDebug() << p2.m_x << "," << p2.m_y;
             drawLine(p1, p2);
             p1 = p2;
         }
@@ -204,6 +275,28 @@ Point2Df GL_Widget::rotateMatrix(Point2Df point, double angle, Point2Df offset)
     return res;
 }
 
+int GL_Widget::getCurvePointCount() const
+{
+    return curvePointCount;
+}
+
+void GL_Widget::setCurvePointCount(int value)
+{
+    curvePointCount = value;
+    m_points.clear();
+    currentPointIndex = 0;
+    updateGL();
+}
+
+bool GL_Widget::getDebugMode() const
+{
+    return m_debugMode;
+}
+
+void GL_Widget::setDebugMode(bool debugMode)
+{
+    m_debugMode = debugMode;
+}
 
 /*void GL_Widget::wheelEvent(QWheelEvent *wheelEvent)
 {

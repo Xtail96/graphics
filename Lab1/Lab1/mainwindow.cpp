@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pointsCountLineEdit->setText(QString::number(ui->fieldGLWidget->getCurvePointCount()));
+    ui->debugCheckBox->setChecked(ui->fieldGLWidget->getDebugMode());
 }
 
 MainWindow::~MainWindow()
@@ -16,16 +17,30 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_applyPushButton_clicked()
 {
+    int currentPointCount = ui->fieldGLWidget->getCurvePointCount();
+
     QString pointsCount = ui->pointsCountLineEdit->text();
     bool ok = true;
     double value = pointsCount.toUInt(&ok);
 
     if(ok)
     {
-        ui->fieldGLWidget->setCurvePointCount(value);
+        if(value != currentPointCount)
+        {
+            ui->fieldGLWidget->setCurvePointCount(value);
+        }
     }
     else
     {
-        ui->pointsCountLineEdit->setText(QString::number(ui->fieldGLWidget->getCurvePointCount()));
+        ui->pointsCountLineEdit->setText(QString::number(currentPointCount));
+    }
+
+    if(ui->debugCheckBox->isChecked())
+    {
+        ui->fieldGLWidget->setDebugMode(true);
+    }
+    else
+    {
+        ui->fieldGLWidget->setDebugMode(false);
     }
 }

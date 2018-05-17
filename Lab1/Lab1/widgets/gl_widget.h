@@ -64,6 +64,9 @@ private:
 
     double m_positionY = 0;
 
+    bool m_debugMode = false;
+    int m_debugPointIndex = -1;
+
     QList<Point2Df> m_points;
 
     int currentPointIndex = 0;
@@ -78,6 +81,9 @@ public:
 
     int getCurvePointCount() const;
     void setCurvePointCount(int value);
+
+    bool getDebugMode() const;
+    void setDebugMode(bool debugMode);
 
 public slots:
 
@@ -99,7 +105,7 @@ protected slots:
 public slots:
     void drawLine(Point2Df begin, Point2Df end);
     void drawPoint(double x, double y);
-    void drawPoint(Point2Df point);
+    void drawPoint(Point2Df point, int index);
 
     void drawCurve();
 
