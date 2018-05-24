@@ -38,34 +38,74 @@ void Widget::paintGL()
     // выставляем флаги
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    modelViewMatrix.setToIdentity();
-    modelViewMatrix.translate(0.0, 0.0, -5.0);
-    modelViewMatrix.rotate(30, 1.0, 0.0, 0.0);
-    modelViewMatrix.rotate(30, 0.0, 1.0, 0.0);
+    m_viewMatrix.setToIdentity();
+    m_viewMatrix.translate(0.0, 0.0, -5.0);
+    m_viewMatrix.rotate(m_rotation);
 
     // привязка текстуры 0 - номер текстуры
     m_texture->bind(0);
 
     m_program.bind();
-    m_program.setUniformValue("qt_ModelViewProjectionMatrix", m_projectionMatrix * modelViewMatrix);
+    m_program.setUniformValue("u_projectionMatrix", m_projectionMatrix);
+    m_program.setUniformValue("u_viewMatrix", m_viewMatrix);
+    m_modelMatrix.setToIdentity();
+    m_program.setUniformValue("u_modelMatrix", m_modelMatrix);
+    m_program.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0));
+    m_program.setUniformValue("u_lightPower", 5.0f);
 
     // инициалиация текстуры в шейдере, 0 - номер текстуры (тот же что и при teture->bind)
-    m_program.setUniformValue("qt_Texture0", 0);
+    m_program.setUniformValue("u_texture", 0);
 
     m_arrayBuffer.bind();
     int offset = 0;
 
-    int vertexLocation = m_program.attributeLocation("qt_Vertex");
+    int vertexLocation = m_program.attributeLocation("a_position");
     m_program.enableAttributeArray(vertexLocation);
     m_program.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
 
-    int textureLocation = m_program.attributeLocation("qt_MultiTexCoord0");
+    offset += sizeof(QVector3D);
+
+    int textureLocation = m_program.attributeLocation("a_texcoord");
     m_program.enableAttributeArray(textureLocation);
     m_program.setAttributeBuffer(textureLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
-    m_indexBuffer.bind();
+    offset += sizeof(QVector2D);
 
+    int normalLocation = m_program.attributeLocation("a_normal");
+    m_program.enableAttributeArray(normalLocation);
+    m_program.setAttributeBuffer(normalLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    m_indexBuffer.bind();
     glDrawElements(GL_TRIANGLES, m_indexBuffer.size(), GL_UNSIGNED_INT, 0);
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::LeftButton)
+    {
+        m_mousePosition = QVector2D(event->localPos());
+    }
+    event->accept();
+}
+
+void Widget::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons() != Qt::LeftButton)
+    {
+        return;
+    }
+
+    QVector2D diff = QVector2D(event->localPos()) - m_mousePosition;
+    m_mousePosition = QVector2D(event->localPos());
+
+    float angle = diff.length() / 2.0;
+
+    // вектор, вокруг которого выполняется поворот, перпендикулярен направлению движения мыши
+    QVector3D axis = QVector3D(diff.y(), diff.x(), 0.0);
+
+    m_rotation = QQuaternion::fromAxisAndAngle(axis, angle) * m_rotation;
+
+    update();
 }
 
 void Widget::initShaders()

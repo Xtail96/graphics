@@ -7,6 +7,7 @@
 #include <QOpenGLTexture>
 #include <QOpenGLBuffer>
 #include <QVector>
+#include <QMouseEvent>
 
 // структура для описания вершины
 struct VertexData
@@ -46,6 +47,9 @@ protected:
     void resizeGL(int w, int h);
     void paintGL();
 
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent* event);
+
     void initShaders();
     void initCube(float width);
 private:
@@ -53,7 +57,10 @@ private:
     QMatrix4x4 m_projectionMatrix;
 
     // матрица вида
-    QMatrix4x4 modelViewMatrix;
+    QMatrix4x4 m_viewMatrix;
+
+    // матрица модели
+    QMatrix4x4 m_modelMatrix;
 
     // для подключения шейдеров
     QOpenGLShaderProgram m_program;
@@ -64,6 +71,10 @@ private:
     // для отрисовки куба
     QOpenGLBuffer m_arrayBuffer;
     QOpenGLBuffer m_indexBuffer;
+
+    // для вращения сцены
+    QVector2D m_mousePosition;
+    QQuaternion m_rotation;
 };
 
 #endif // WIDGET_H
