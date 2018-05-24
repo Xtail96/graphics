@@ -12,6 +12,7 @@ class GL_Widget: public QGLWidget
     Q_OBJECT
 private:
     QOpenGLShaderProgram *m_program;
+    QMatrix4x4 m_projectionMatrix;
 
     GLfloat cubeVertexArray[8][3];
     GLfloat cubeColorArray[8][3];

@@ -19,7 +19,7 @@ void GL_Widget::initializeGL(){
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
 
-    //initShaders();
+    initShaders();
     initTextures();
 
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -28,9 +28,14 @@ void GL_Widget::initializeGL(){
 
 void GL_Widget::resizeGL(int nWidth, int nHeight)
 {
-    glMatrixMode(GL_PROJECTION);
+    //glMatrixMode(GL_PROJECTION);
 
-    glLoadIdentity();
+    float aspect = nWidth / (float) nHeight;
+
+    m_projectionMatrix.setToIdentity();
+    m_projectionMatrix.perspective(45, aspect, 1.0f, 10.0f);
+
+    //glLoadIdentity();
 
     glOrtho(-0.5, 1.5, -0.5, 1.5, -10.0, 10.0);
 
@@ -88,16 +93,19 @@ void GL_Widget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glMatrixMode(GL_MODELVIEW);
+    //glMatrixMode(GL_MODELVIEW);
 
-    glLoadIdentity();
+    //glLoadIdentity();
 
-    glScalef(m_scale, m_scale, m_scale);
+    //glScalef(m_scale, m_scale, m_scale);
 
-    glRotatef(yAxisRotation, 0.0, 1.0, 0.0);
-    glRotatef(xAxisRotation, 1.0, 0.0, 0.0);
+    //glRotatef(yAxisRotation, 0.0, 1.0, 0.0);
+    //glRotatef(xAxisRotation, 1.0, 0.0, 0.0);
 
-
+    QMatrix4x4 viewMatrix;
+    viewMatrix.setToIdentity();
+    viewMatrix.translate(0.0, 0.0, -5.0);
+    viewMatrix.rotate(1, xAxisRotation, yAxisRotation);
 
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -268,6 +276,13 @@ void GL_Widget::paintGL()
     glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
     glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
+
+
+    m_program->bind();
+    m_program->setUniformValue("u_projectionMatrix", m_projectionMatrix);
+    m_program->setUniformValue("u_viewMatrix", viewMatrix);
+    m_program->setUniformValue("u_modelMatrix", QMatrix4x4().setToIdentity());
+    //m_program->setUniformValue();
 }
 
 void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
