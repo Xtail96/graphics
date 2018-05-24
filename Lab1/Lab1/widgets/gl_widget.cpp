@@ -1,313 +1,361 @@
 #include "gl_widget.h"
 
 GL_Widget::GL_Widget(QWidget *parent):
-    QGLWidget(parent)
+    QGLWidget(parent),
+    m_program(new QOpenGLShaderProgram(this))
 {
-    setGeometry(20, 20, 550, 500);
+    //setGeometry(20, 20, 550, 500);
+    xAxisRotation = yAxisRotation = 0;
+}
+
+GL_Widget::~GL_Widget()
+{
+    if(m_texture != nullptr)
+    {
+        delete m_texture;
+    }
 }
 
 void GL_Widget::initializeGL(){
-    //glClearColor(0.913, 0.933, 0.996, 1);
-    //glClearColor(0, 0, 0, 1);
-    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glClearColor(0.913, 0.933, 0.996, 1);
+    glEnable(GL_DEPTH_TEST);
+    glShadeModel(GL_FLAT);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
 
-    glViewport(0, 0, 1, 1);
+    //initShaders();
+    initTextures();
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glOrtho(0.0, 800.0, 0.0, 0.0, 700.0, 0.0);
-    glScalef(m_scale, m_scale, m_scale);
-
-    //glViewport(0, 0, this->width(), this->height());
-
-    //glClearColor(1.0, 1.0, 1.0, 0.0);
-
-    /*glColor3f(0.0, 0.0, 0.0);
-    glPointSize(3);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();*/
-
-    //
-    //gluOrtho2D(0.0, 800.0, 0.0, 700.0);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-void GL_Widget::paintGL(){
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    //glViewport(0, 0, 1, 1);
-
-    //Задаем режим матрицы
+void GL_Widget::resizeGL(int nWidth, int nHeight)
+{
     glMatrixMode(GL_PROJECTION);
 
-    //Загружаем матрицу
     glLoadIdentity();
 
-    //move();
+    glOrtho(-0.5, 1.5, -0.5, 1.5, -10.0, 10.0);
 
-    for(int i = 0; i < m_points.size(); i++)
+    glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+
+    currentWidth = nWidth;
+    currentHeight = nHeight;
+}
+
+void GL_Widget::initShaders()
+{
+    //m_texture = new QOpenGLTexture(QImage(":/123.jpg").mirrored());
+
+    if(!m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":vsh.vsh"))
     {
-        drawPoint(m_points[i], i);
+        qDebug() << "can not add vertex shader";
+        this->close();
+    }
+    if(!m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":fsh.fsh"))
+    {
+        qDebug() << "can not add fragment shader";
+        this->close();
     }
 
-    drawCurve();
+    if(!m_program->link())
+    {
+        qDebug() << "can not link program";
+        this->close();
+    }
 
-    //glScalef(m_scale, m_scale, m_scale);
-
-    /*glBegin(GL_LINES);
-    glColor3f(1, 1, 1);
-    glVertex3f(0, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();*/
+    if(!m_program->bind())
+    {
+        qDebug() << "can not bind program";
+        this->close();
+    }
 }
 
-void GL_Widget::move()
+void GL_Widget::initTextures()
 {
-    glTranslatef(0.5f * m_positionX, -(0.5f * m_positionY), 0);
+    m_texture = new QOpenGLTexture(QImage(":/123.jpg").mirrored());
+
+    glGenTextures(6, textures);
+
+    QImage texture1;
+    texture1.load(":/123.jpg");
+    texture1 = QGLWidget::convertToGLFormat(texture1);
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture1.width(), (GLsizei)texture1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture1.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    QImage texture2;
+    texture2.load(":/123.jpg");
+    texture2 = QGLWidget::convertToGLFormat(texture2);
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture2.width(), (GLsizei)texture2.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture2.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    QImage texture3;
+    texture3.load(":/123.jpg");
+    texture3 = QGLWidget::convertToGLFormat(texture3);
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture3.width(), (GLsizei)texture3.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture3.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    QImage texture4;
+    texture4.load(":/123.jpg");
+    texture4 = QGLWidget::convertToGLFormat(texture4);
+    glBindTexture(GL_TEXTURE_2D, textures[3]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture4.width(), (GLsizei)texture4.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture4.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    QImage texture5;
+    texture5.load(":/123.jpg");
+    texture5 = QGLWidget::convertToGLFormat(texture5);
+    glBindTexture(GL_TEXTURE_2D, textures[4]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture5.width(), (GLsizei)texture5.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture5.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+    QImage texture6;
+    texture6.load(":/123.jpg");
+    texture6 = QGLWidget::convertToGLFormat(texture6);
+    glBindTexture(GL_TEXTURE_2D, textures[5]);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture6.width(), (GLsizei)texture6.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture6.bits());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+}
+
+void GL_Widget::paintGL()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+
+    glLoadIdentity();
+
+    glRotatef(yAxisRotation, 0.0, 1.0, 0.0);
+    glRotatef(xAxisRotation, 1.0, 0.0, 0.0);
+
+    glBindTexture(GL_TEXTURE_2D, textures[0]);
+
+    cubeVertexArray[0][0] = 0.0;
+    cubeVertexArray[0][1] = 0.0;
+    cubeVertexArray[0][2] = 1.0;
+
+    cubeVertexArray[1][0] = 0.0;
+    cubeVertexArray[1][1] = 1.0;
+    cubeVertexArray[1][2] = 1.0;
+
+    cubeVertexArray[2][0] = 1.0;
+    cubeVertexArray[2][1] = 1.0;
+    cubeVertexArray[2][2] = 1.0;
+
+    cubeVertexArray[3][0] = 1.0;
+    cubeVertexArray[3][1] = 0.0;
+    cubeVertexArray[3][2] = 1.0;
+
+    cubeVertexArray[4][0] = 0.0;
+    cubeVertexArray[4][1] = 0.0;
+    cubeVertexArray[4][2] = 0.0;
+
+    cubeVertexArray[5][0] = 0.0;
+    cubeVertexArray[5][1] = 1.0;
+    cubeVertexArray[5][2] = 0.0;
+
+    cubeVertexArray[6][0] = 1.0;
+    cubeVertexArray[6][1] = 1.0;
+    cubeVertexArray[6][2] = 0.0;
+
+    cubeVertexArray[7][0] = 1.0;
+    cubeVertexArray[7][1] = 0.0;
+    cubeVertexArray[7][2] = 0.0;
+
+    cubeTextureArray[0][0] = 0.0;
+    cubeTextureArray[0][1] = 0.0;
+
+    cubeTextureArray[1][0] = 1.0;
+    cubeTextureArray[1][1] = 0.0;
+
+    cubeTextureArray[2][0] = 1.0;
+    cubeTextureArray[2][1] = 1.0;
+
+    cubeTextureArray[3][0] = 0.0;
+    cubeTextureArray[3][1] = 1.0;
+
+    cubeIndexArray[0][0] = 0;
+    cubeIndexArray[0][1] = 3;
+    cubeIndexArray[0][2] = 2;
+    cubeIndexArray[0][3] = 1;
+
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
+    glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
+    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
+
+    glBindTexture(GL_TEXTURE_2D, textures[1]);
+
+    cubeTextureArray[0][0] = 0.0;
+    cubeTextureArray[0][1] = 0.0;
+
+    cubeTextureArray[1][0] = 1.0;
+    cubeTextureArray[1][1] = 0.0;
+
+    cubeTextureArray[5][0] = 1.0;
+    cubeTextureArray[5][1] = 1.0;
+
+    cubeTextureArray[4][0] = 0.0;
+    cubeTextureArray[4][1] = 1.0;
+
+    cubeIndexArray[0][0] = 0;
+    cubeIndexArray[0][1] = 1;
+    cubeIndexArray[0][2] = 5;
+    cubeIndexArray[0][3] = 4;
+
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
+    glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
+    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
+
+    glBindTexture(GL_TEXTURE_2D, textures[2]);
+
+    cubeTextureArray[7][0] = 0.0;
+    cubeTextureArray[7][1] = 0.0;
+
+    cubeTextureArray[4][0] = 1.0;
+    cubeTextureArray[4][1] = 0.0;
+
+    cubeTextureArray[5][0] = 1.0;
+    cubeTextureArray[5][1] = 1.0;
+
+    cubeTextureArray[6][0] = 0.0;
+    cubeTextureArray[6][1] = 1.0;
+
+    cubeIndexArray[0][0] = 7;
+    cubeIndexArray[0][1] = 4;
+    cubeIndexArray[0][2] = 5;
+    cubeIndexArray[0][3] = 6;
+
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
+    glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
+    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
+
+    glBindTexture(GL_TEXTURE_2D, textures[3]);
+
+    cubeTextureArray[3][0] = 0.0;
+    cubeTextureArray[3][1] = 0.0;
+
+    cubeTextureArray[7][0] = 1.0;
+    cubeTextureArray[7][1] = 0.0;
+
+    cubeTextureArray[6][0] = 1.0;
+    cubeTextureArray[6][1] = 1.0;
+
+    cubeTextureArray[2][0] = 0.0;
+    cubeTextureArray[2][1] = 1.0;
+
+    cubeIndexArray[0][0] = 3;
+    cubeIndexArray[0][1] = 7;
+    cubeIndexArray[0][2] = 6;
+    cubeIndexArray[0][3] = 2;
+
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
+    glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
+    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
+
+    glBindTexture(GL_TEXTURE_2D, textures[4]);
+
+    cubeTextureArray[1][0] = 0.0;
+    cubeTextureArray[1][1] = 0.0;
+
+    cubeTextureArray[2][0] = 1.0;
+    cubeTextureArray[2][1] = 0.0;
+
+    cubeTextureArray[6][0] = 1.0;
+    cubeTextureArray[6][1] = 1.0;
+
+    cubeTextureArray[5][0] = 0.0;
+    cubeTextureArray[5][1] = 1.0;
+
+    cubeIndexArray[0][0] = 1;
+    cubeIndexArray[0][1] = 2;
+    cubeIndexArray[0][2] = 6;
+    cubeIndexArray[0][3] = 5;
+
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
+    glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
+    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
+
+    glBindTexture(GL_TEXTURE_2D, textures[5]);
+
+    cubeTextureArray[0][0] = 0.0;
+    cubeTextureArray[0][1] = 0.0;
+
+    cubeTextureArray[4][0] = 1.0;
+    cubeTextureArray[4][1] = 0.0;
+
+    cubeTextureArray[7][0] = 1.0;
+    cubeTextureArray[7][1] = 1.0;
+
+    cubeTextureArray[3][0] = 0.0;
+    cubeTextureArray[3][1] = 1.0;
+
+    cubeIndexArray[0][0] = 0;
+    cubeIndexArray[0][1] = 4;
+    cubeIndexArray[0][2] = 7;
+    cubeIndexArray[0][3] = 3;
+
+    glVertexPointer(3, GL_FLOAT, 0, cubeVertexArray);
+    glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
+    glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
 }
 
 void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
-    double dx = (double) (mouseEvent->x() - m_mousePositionX) / (10 * (this->width() / 2));
-    double dy = (double) (mouseEvent->y() - m_mousePositionY) / (10 * (this->height() / 2));
+    //double dx = (double) (mouseEvent->x() - m_mousePositionX) / (10 * (this->width() / 2));
+    //double dy = (double) (mouseEvent->y() - m_mousePositionY) / (10 * (this->height() / 2));
 
-    //qDebug() << m_debugPointIndex << dx << dy;
+    xAxisRotation += (180 * ((GLfloat)mouseEvent->y() - (GLfloat)pressPosition.y())) / (currentHeight);
+    yAxisRotation += (180 * ((GLfloat)mouseEvent->x() - (GLfloat)pressPosition.x())) / (currentWidth);
 
-    if(m_debugMode)
-    {
-        if(m_debugPointIndex > 0 && m_debugPointIndex < m_points.size())
-        {
-            m_points[m_debugPointIndex].m_x += dx;
-            m_points[m_debugPointIndex].m_y -= dy;
-        }
-    }
-
-    //qDebug() << m_debugPointIndex;
-
+    pressPosition = mouseEvent->pos();
     updateGL();
-
-    /*if(m_debugMode)
-    {
-        Point2Df center((double) this->width() / 2, (double) this->height() / 2);
-        double x = (double) (m_mousePositionX - center.m_x) / 350;
-        double y = (double) (center.m_y - m_mousePositionY) / 350;
-
-        double deltaX = INT_MAX;
-        double deltaY = INT_MAX;
-
-        int pointIndex = -1;
-
-        for(int i = 0; i < m_points.size(); i++)
-        {
-            double currentDeltaX = abs(m_points[i].m_x - x);
-            double currentDeltaY = abs(m_points[i].m_y - y);
-            if(currentDeltaX < deltaX && currentDeltaY < deltaY)
-            {
-                pointIndex = i;
-            }
-        }
-
-        if(pointIndex >= 0 && pointIndex < m_points.size())
-        {
-            m_points[pointIndex].m_x += dx;
-            m_points[pointIndex].m_y += dy;
-        }
-
-        updateGL();
-    }*/
-
-    /*double dx = (mouseEvent->x() - m_mousePositionX) / 10;
-    double dy = (mouseEvent->y() - m_mousePositionY) / 10;
-
-    if (mouseEvent->buttons() == Qt::LeftButton)
-    {
-        setPositionX(m_positionX + dx/1000);
-        setPositionY(m_positionY + dy/1000);
-    }
-
-    updateGL();*/
 }
 
 void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
 {
-    m_mousePositionX = mouseEvent->x();
-    m_mousePositionY = mouseEvent->y();
+    //m_mousePositionX = mouseEvent->x();
+    //m_mousePositionY = mouseEvent->y();
 
-    Point2Df center((double) this->width() / 2, (double) this->height() / 2);
-    double x = (double) (m_mousePositionX - center.m_x) / (this->width() / 2);
-    double y = (double) (center.m_y - m_mousePositionY) / (this->height() / 2);
-
-    //qDebug() << x << y;
-
-    if(!m_debugMode)
-    {
-        if(m_points.size() >= curvePointCount)
-        {
-            m_points.clear();
-            currentPointIndex = 0;
-        }
-
-        Point2Df point(x, y);
-        m_points.push_back(point);
-
-        m_points[currentPointIndex].m_x = x;
-        m_points[currentPointIndex].m_y = y;
-
-        currentPointIndex++;
-    }
-    else
-    {
-        /*for(int i = 0; i < m_points.size(); i++)
-        {
-            double deltaX = abs(m_points[i].m_x - x);
-            double deltaY = abs(m_points[i].m_y - x);
-
-            qDebug() << "point" + QString::number(i) << deltaX << deltaY;
-
-            if(deltaX < 0.2 && deltaY < 0.2)
-            {
-                m_debugPointIndex = i;
-                break;
-            }
-        }
-
-        qDebug() << "---";*/
-
-        double deltaX = INT_MAX;
-        double deltaY = INT_MAX;
-
-        for(int i = 0; i < m_points.size(); i++)
-        {
-            double currentDeltaX = abs(m_points[i].m_x - x);
-            double currentDeltaY = abs(m_points[i].m_y - y);
-            if(currentDeltaX < deltaX && currentDeltaY < deltaY)
-            {
-                deltaX = currentDeltaX;
-                deltaY = currentDeltaY;
-                m_debugPointIndex = i;
-            }
-        }
-    }
-
-    //qDebug() << m_debugPointIndex;
+    pressPosition = mouseEvent->pos();
 
     updateGL();
 }
 
-void GL_Widget::setPositionX(double value)
-{
-    m_positionX = value;
-}
-
-void GL_Widget::setPositionY(double value)
-{
-    m_positionY = value;
-}
-
-void GL_Widget::drawLine(Point2Df begin, Point2Df end)
-{
-    glBegin(GL_LINES);
-    glVertex2f(begin.m_x, begin.m_y);
-    glVertex2f(end.m_x, end.m_y);
-    glEnd();
-    glFlush();
-}
-
-void GL_Widget::drawPoint(double x, double y)
-{
-    glBegin(GL_POINTS);
-    glColor3f(1.0, 0.0, 0.0);
-    glPointSize(5);
-    glVertex2f(x, y);
-    glEnd();
-    glFlush();
-}
-
-void GL_Widget::drawPoint(Point2Df point, int index)
-{
-    //qDebug() << "point" << point.m_x << point.m_y;
-    glPointSize(5);
-    glBegin(GL_POINTS);
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex2f(point.m_x, point.m_y);
-    glEnd();
-    glFlush();
-
-    renderText(point.m_x, point.m_y, 0, QString::number(index));
-}
-
-void GL_Widget::drawCurve()
-{
-    if(currentPointIndex == curvePointCount)
-    {
-        // Drawing the control lines
-        glColor3f(0.0, 0.0, 1.0);
-        glLineWidth(1);
-        for (int i = 0; i < curvePointCount - 1; i++)
-        {
-            drawLine(m_points[i], m_points[i+1]);
-        }
-
-
-        glColor3f(0.2, 1.0, 0.0);
-        glLineWidth(5);
-
-        Point2Df p1 = m_points[0];
-        /* Draw each segment of the curve.Make t increment in smaller amounts for a more detailed curve.*/
-        for (double t = 0.0; t <= 1.0; t += 0.02)
-        {
-            Point2Df p2 = drawBezierGeneralized(m_points, t);
-            //qDebug() << p1.m_x << "," << p1.m_y;
-            //qDebug() << p2.m_x << "," << p2.m_y;
-            drawLine(p1, p2);
-            p1 = p2;
-        }
-        glColor3f(0.0, 0.0, 0.0);
-    }
-}
-
-Point2Df GL_Widget::rotateMatrix(Point2Df point, double angle, Point2Df offset)
-{
-    double radian = angle * (M_PI/180);
-
-    Point2Df res;
-
-    res.m_x = point.m_x * cos(radian) - point.m_y * sin(radian) + offset.m_x;
-    res.m_y = point.m_x * sin(radian) + point.m_y * cos(radian) + offset.m_y;
-
-    return res;
-}
-
-int GL_Widget::getCurvePointCount() const
-{
-    return curvePointCount;
-}
-
-void GL_Widget::setCurvePointCount(int value)
-{
-    curvePointCount = value;
-    m_points.clear();
-    currentPointIndex = 0;
-    updateGL();
-}
-
-bool GL_Widget::getDebugMode() const
-{
-    return m_debugMode;
-}
-
-void GL_Widget::setDebugMode(bool debugMode)
-{
-    m_debugMode = debugMode;
-}
 
 /*void GL_Widget::wheelEvent(QWheelEvent *wheelEvent)
 {
     scaling(wheelEvent->delta());
-}*/
+}
 
-/*void GL_Widget::scaling(int delta)
+void GL_Widget::scaling(int delta)
 {
     // если колесико вращаем вперед -- умножаем переменную масштаба на 1.1
     // иначе - делим на 1.1

@@ -21,8 +21,6 @@ private:
 
 protected slots:
 private slots:
-    void on_applyPushButton_clicked();
-    void on_debugCheckBox_clicked();
 };
 
 #endif // MAINWINDOW_H

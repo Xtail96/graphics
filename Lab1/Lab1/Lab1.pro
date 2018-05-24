@@ -37,3 +37,11 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+DISTFILES += \
+    fsh.fsh \
+    vsh.vsh
+
+RESOURCES += \
+    shaders.qrc \
+    images.qrc
