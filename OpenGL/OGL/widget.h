@@ -8,31 +8,9 @@
 #include <QOpenGLBuffer>
 #include <QVector>
 #include <QMouseEvent>
+#include <QOpenGLContext>
 
-// структура для описания вершины
-struct VertexData
-{
-    VertexData()
-    {
-    }
-
-    VertexData(QVector3D p, QVector2D t, QVector3D n) :
-        position(p),
-        texCoords(t),
-        normal(n)
-    {
-    }
-
-    // координаты в трехмерном пространстве
-    QVector3D position;
-
-    // координаты накладываемой текстуры
-    QVector2D texCoords;
-
-    // координаты вектора-нормали в трехмерном пространстве для текущей вершины
-    QVector3D normal;
-};
-
+#include "simpleobject3d.h"
 
 class Widget : public QOpenGLWidget
 {
@@ -59,18 +37,10 @@ private:
     // матрица вида
     QMatrix4x4 m_viewMatrix;
 
-    // матрица модели
-    QMatrix4x4 m_modelMatrix;
-
     // для подключения шейдеров
     QOpenGLShaderProgram m_program;
 
-    // для наложения текстуры
-    QOpenGLTexture *m_texture;
-
-    // для отрисовки куба
-    QOpenGLBuffer m_arrayBuffer;
-    QOpenGLBuffer m_indexBuffer;
+    QVector<SimpleObject3D*> m_objects;
 
     // для вращения сцены
     QVector2D m_mousePosition;

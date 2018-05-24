@@ -25,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        widget.cpp
+        widget.cpp \
+    simpleobject3d.cpp
 
 HEADERS += \
-        widget.h
+        widget.h \
+    simpleobject3d.h
 
 DISTFILES += \
     vshader.vsh \

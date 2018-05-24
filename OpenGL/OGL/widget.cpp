@@ -1,10 +1,7 @@
 #include "widget.h"
 
 Widget::Widget(QWidget *parent)
-    : QOpenGLWidget(parent),
-      m_texture(0),
-      m_arrayBuffer(QOpenGLBuffer::VertexBuffer),
-      m_indexBuffer(QOpenGLBuffer::IndexBuffer)
+    : QOpenGLWidget(parent)
 {
 
 }
@@ -24,6 +21,10 @@ void Widget::initializeGL()
 
     initShaders();
     initCube(1.0f);
+    m_objects[0]->translate(QVector3D(-0.5, 0.0, 0.0));
+
+    initCube(0.5f);
+    m_objects[1]->translate(QVector3D(0.5, 0.0, 0.0));
 }
 
 void Widget::resizeGL(int w, int h)
@@ -42,41 +43,16 @@ void Widget::paintGL()
     m_viewMatrix.translate(0.0, 0.0, -5.0);
     m_viewMatrix.rotate(m_rotation);
 
-    // привязка текстуры 0 - номер текстуры
-    m_texture->bind(0);
-
     m_program.bind();
     m_program.setUniformValue("u_projectionMatrix", m_projectionMatrix);
     m_program.setUniformValue("u_viewMatrix", m_viewMatrix);
-    m_modelMatrix.setToIdentity();
-    m_program.setUniformValue("u_modelMatrix", m_modelMatrix);
     m_program.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0));
     m_program.setUniformValue("u_lightPower", 5.0f);
 
-    // инициалиация текстуры в шейдере, 0 - номер текстуры (тот же что и при teture->bind)
-    m_program.setUniformValue("u_texture", 0);
-
-    m_arrayBuffer.bind();
-    int offset = 0;
-
-    int vertexLocation = m_program.attributeLocation("a_position");
-    m_program.enableAttributeArray(vertexLocation);
-    m_program.setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
-
-    offset += sizeof(QVector3D);
-
-    int textureLocation = m_program.attributeLocation("a_texcoord");
-    m_program.enableAttributeArray(textureLocation);
-    m_program.setAttributeBuffer(textureLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
-
-    offset += sizeof(QVector2D);
-
-    int normalLocation = m_program.attributeLocation("a_normal");
-    m_program.enableAttributeArray(normalLocation);
-    m_program.setAttributeBuffer(normalLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
-
-    m_indexBuffer.bind();
-    glDrawElements(GL_TRIANGLES, m_indexBuffer.size(), GL_UNSIGNED_INT, 0);
+    for(auto object : m_objects)
+    {
+        object->draw(&m_program, context()->functions());
+    }
 }
 
 void Widget::mousePressEvent(QMouseEvent *event)
@@ -282,19 +258,5 @@ void Widget::initCube(float width)
         indexes.append(i + 3);
     }
 
-    m_arrayBuffer.create();
-    m_arrayBuffer.bind();
-    m_arrayBuffer.allocate(vertexes.constData(), vertexes.size() * sizeof(VertexData));
-    m_arrayBuffer.release();
-
-    m_indexBuffer.create();
-    m_indexBuffer.bind();
-    m_indexBuffer.allocate(indexes.constData(), indexes.size() * sizeof(GLuint));
-    m_indexBuffer.release();
-
-    // загрузка и настройка текстуры
-    m_texture = new QOpenGLTexture(QImage(":/123.jpg").mirrored());
-    m_texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    m_texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    m_texture->setWrapMode(QOpenGLTexture::Repeat);
+    m_objects.append(new SimpleObject3D(vertexes, indexes, QImage(":/123.jpg")));
 }
