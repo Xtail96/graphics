@@ -8,6 +8,7 @@
 #include <QOpenGLBuffer>
 #include <QVector>
 
+// структура для описания вершины
 struct VertexData
 {
     VertexData()
@@ -21,8 +22,13 @@ struct VertexData
     {
     }
 
+    // координаты в трехмерном пространстве
     QVector3D position;
+
+    // координаты накладываемой текстуры
     QVector2D texCoords;
+
+    // координаты вектора-нормали в трехмерном пространстве для текущей вершины
     QVector3D normal;
 };
 
