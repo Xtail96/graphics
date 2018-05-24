@@ -10,10 +10,6 @@ GL_Widget::GL_Widget(QWidget *parent):
 
 GL_Widget::~GL_Widget()
 {
-    if(m_texture != nullptr)
-    {
-        delete m_texture;
-    }
 }
 
 void GL_Widget::initializeGL(){
@@ -74,70 +70,13 @@ void GL_Widget::initShaders()
 
 void GL_Widget::initTextures()
 {
-    m_texture = new QOpenGLTexture(QImage(":/123.jpg").mirrored());
-
-    glGenTextures(6, textures);
+    glGenTextures(1, &texture);
 
     QImage texture1;
     texture1.load(":/123.jpg");
     texture1 = QGLWidget::convertToGLFormat(texture1);
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture1.width(), (GLsizei)texture1.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture1.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    QImage texture2;
-    texture2.load(":/123.jpg");
-    texture2 = QGLWidget::convertToGLFormat(texture2);
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture2.width(), (GLsizei)texture2.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture2.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    QImage texture3;
-    texture3.load(":/123.jpg");
-    texture3 = QGLWidget::convertToGLFormat(texture3);
-    glBindTexture(GL_TEXTURE_2D, textures[2]);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture3.width(), (GLsizei)texture3.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture3.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    QImage texture4;
-    texture4.load(":/123.jpg");
-    texture4 = QGLWidget::convertToGLFormat(texture4);
-    glBindTexture(GL_TEXTURE_2D, textures[3]);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture4.width(), (GLsizei)texture4.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture4.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    QImage texture5;
-    texture5.load(":/123.jpg");
-    texture5 = QGLWidget::convertToGLFormat(texture5);
-    glBindTexture(GL_TEXTURE_2D, textures[4]);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture5.width(), (GLsizei)texture5.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture5.bits());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-    QImage texture6;
-    texture6.load(":/123.jpg");
-    texture6 = QGLWidget::convertToGLFormat(texture6);
-    glBindTexture(GL_TEXTURE_2D, textures[5]);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, (GLsizei)texture6.width(), (GLsizei)texture6.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture6.bits());
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -153,10 +92,14 @@ void GL_Widget::paintGL()
 
     glLoadIdentity();
 
+    glScalef(m_scale, m_scale, m_scale);
+
     glRotatef(yAxisRotation, 0.0, 1.0, 0.0);
     glRotatef(xAxisRotation, 1.0, 0.0, 0.0);
 
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
+
+
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     cubeVertexArray[0][0] = 0.0;
     cubeVertexArray[0][1] = 0.0;
@@ -211,7 +154,7 @@ void GL_Widget::paintGL()
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
     glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
 
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     cubeTextureArray[0][0] = 0.0;
     cubeTextureArray[0][1] = 0.0;
@@ -234,7 +177,7 @@ void GL_Widget::paintGL()
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
     glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
 
-    glBindTexture(GL_TEXTURE_2D, textures[2]);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     cubeTextureArray[7][0] = 0.0;
     cubeTextureArray[7][1] = 0.0;
@@ -257,7 +200,7 @@ void GL_Widget::paintGL()
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
     glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
 
-    glBindTexture(GL_TEXTURE_2D, textures[3]);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     cubeTextureArray[3][0] = 0.0;
     cubeTextureArray[3][1] = 0.0;
@@ -280,7 +223,7 @@ void GL_Widget::paintGL()
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
     glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
 
-    glBindTexture(GL_TEXTURE_2D, textures[4]);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     cubeTextureArray[1][0] = 0.0;
     cubeTextureArray[1][1] = 0.0;
@@ -303,7 +246,7 @@ void GL_Widget::paintGL()
     glTexCoordPointer(2, GL_FLOAT, 0, cubeTextureArray);
     glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, cubeIndexArray);
 
-    glBindTexture(GL_TEXTURE_2D, textures[5]);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     cubeTextureArray[0][0] = 0.0;
     cubeTextureArray[0][1] = 0.0;
@@ -329,9 +272,6 @@ void GL_Widget::paintGL()
 
 void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 {
-    //double dx = (double) (mouseEvent->x() - m_mousePositionX) / (10 * (this->width() / 2));
-    //double dy = (double) (mouseEvent->y() - m_mousePositionY) / (10 * (this->height() / 2));
-
     xAxisRotation += (180 * ((GLfloat)mouseEvent->y() - (GLfloat)pressPosition.y())) / (currentHeight);
     yAxisRotation += (180 * ((GLfloat)mouseEvent->x() - (GLfloat)pressPosition.x())) / (currentWidth);
 
@@ -341,16 +281,12 @@ void GL_Widget::mouseMoveEvent(QMouseEvent *mouseEvent)
 
 void GL_Widget::mousePressEvent(QMouseEvent *mouseEvent)
 {
-    //m_mousePositionX = mouseEvent->x();
-    //m_mousePositionY = mouseEvent->y();
-
     pressPosition = mouseEvent->pos();
-
     updateGL();
 }
 
 
-/*void GL_Widget::wheelEvent(QWheelEvent *wheelEvent)
+void GL_Widget::wheelEvent(QWheelEvent *wheelEvent)
 {
     scaling(wheelEvent->delta());
 }
@@ -371,4 +307,4 @@ void GL_Widget::scaling(int delta)
         }
     }
     updateGL();
-}*/
+}

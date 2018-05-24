@@ -1,24 +1,17 @@
 #ifndef GL_WINDGET_H
 #define GL_WINDGET_H
 
-#include <cmath>
-
 #include <QGLWidget>
 #include <QDebug>
 #include <QPoint>
 #include <QMouseEvent>
 #include <QOpenGLShaderProgram>
-#include <QOpenGLTexture>
-#include <QFileDialog>
-#include <QOpenGLFunctions>
-#include <QOpenGLBuffer>
 
 class GL_Widget: public QGLWidget
 {
     Q_OBJECT
 private:
     QOpenGLShaderProgram *m_program;
-    QOpenGLTexture *m_texture;
 
     GLfloat cubeVertexArray[8][3];
     GLfloat cubeColorArray[8][3];
@@ -32,7 +25,8 @@ private:
     GLfloat yAxisRotation;
     GLfloat currentWidth;
     GLfloat currentHeight;
-    GLuint textures[6];
+    GLuint texture;
+    double m_scale = 1;
 
     void initTextures();
 
@@ -49,13 +43,13 @@ public:
 
 public slots:
 
-    //void wheelEvent(QWheelEvent *wheelEvent);
+    void wheelEvent(QWheelEvent *wheelEvent);
 
     void mouseMoveEvent(QMouseEvent *mouseEvent);
     void mousePressEvent(QMouseEvent *mouseEvent);
 
 protected slots:
-    //void scaling(int delta);
+    void scaling(int delta);
 
 public slots:
 };
