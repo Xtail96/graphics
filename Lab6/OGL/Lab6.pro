@@ -28,14 +28,16 @@ SOURCES += \
         widget.cpp \
     simpleobject3d.cpp \
     group3d.cpp \
-    camera3d.cpp
+    camera3d.cpp \
+    figurebuilder.cpp
 
 HEADERS += \
         widget.h \
     simpleobject3d.h \
     transformational.h \
     group3d.h \
-    camera3d.h
+    camera3d.h \
+    figurebuilder.h
 
 DISTFILES += \
     vshader.vsh \

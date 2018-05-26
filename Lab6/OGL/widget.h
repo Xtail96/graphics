@@ -16,6 +16,7 @@
 #include "simpleobject3d.h"
 #include "group3d.h"
 #include "camera3d.h"
+#include "figurebuilder.h"
 
 class Widget : public QOpenGLWidget
 {
@@ -38,8 +39,6 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     void initShaders();
-    SimpleObject3D *initCube(float width);
-    SimpleObject3D *initSandGlass();
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
