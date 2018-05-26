@@ -21,68 +21,9 @@ void Widget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     initShaders();
+    initSandGlass();
 
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(QVector3D(0.0, 0.0, 0.0), 1, 2 * M_PI)));
-
-    QVector3D center1 = QVector3D(0.0, 0.0, 0.0);
-    QVector3D center2 = QVector3D(0.0, 0.0, -0.5);
-    double r1 = 1;
-    double r2 = 1.5;
-    double step = 0.1;
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
-
-    center1 = QVector3D(0.0, 0.0, -0.5);
-    center2 = QVector3D(0.0, 0.0, -1.0);
-    r1 = 1.5;
-    r2 = 1.5;
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
-
-    center1 = QVector3D(0.0, 0.0, -1.0);
-    center2 = QVector3D(0.0, 0.0, -1.5);
-    r1 = 1.5;
-    r2 = 1;
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
-
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(center2, r2, 2 * M_PI, 0.1, true)));
-
-
-    /*float step = 2.0f;
-    m_groups.append(QSharedPointer<Group3D>(new Group3D()));
-    for(float x = -step; x <= step; x += step)
-    {
-        for(float y = -step; y <= step; y += step)
-        {
-            for(float z = -step; z <= step; z += step)
-            {
-                initCube(1.0f);
-                m_objects[m_objects.size() - 1]->translate(QVector3D(x, y, z));
-                m_groups[0]->addObject(m_objects[m_objects.size() - 1].data());
-            }
-        }
-    }
-    m_groups[0]->translate(QVector3D(-4.0, 0.0, 0.0));
-
-    m_groups.append(QSharedPointer<Group3D>(new Group3D()));
-    for(float x = -step; x <= step; x += step)
-    {
-        for(float y = -step; y <= step; y += step)
-        {
-            for(float z = -step; z <= step; z += step)
-            {
-                initCube(1.0f);
-                m_objects[m_objects.size() - 1]->translate(QVector3D(x, y, z));
-                m_groups[1]->addObject(m_objects[m_objects.size() - 1].data());
-            }
-        }
-    }
-    m_groups[1]->translate(QVector3D(4.0, 0.0, 0.0));
-
-    m_groups.append(QSharedPointer<Group3D>(new Group3D()));
-    m_groups[2]->addObject(m_groups[0].data());
-    m_groups[2]->addObject(m_groups[1].data());
-
-    m_transformObjects.append(m_groups[2]);*/
 
     //m_timer.start(30, this);
 }
@@ -247,4 +188,34 @@ void Widget::initShaders()
         qDebug() << "can not link shader program";
         this->close();
     }
+}
+
+void Widget::initSandGlass()
+{
+    m_groups.push_back(QSharedPointer<Group3D>(new Group3D()));
+
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(QVector3D(0.0, 0.0, 0.0), 1, 2 * M_PI));
+
+    QVector3D center1 = QVector3D(0.0, 0.0, 0.0);
+    QVector3D center2 = QVector3D(0.0, 0.0, -0.5);
+    double r1 = 1;
+    double r2 = 1.5;
+    double step = 0.1;
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
+
+    center1 = QVector3D(0.0, 0.0, -0.5);
+    center2 = QVector3D(0.0, 0.0, -1.0);
+    r1 = 1.5;
+    r2 = 1.5;
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
+
+    center1 = QVector3D(0.0, 0.0, -1.0);
+    center2 = QVector3D(0.0, 0.0, -1.5);
+    r1 = 1.5;
+    r2 = 1;
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
+
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center2, r2, 2 * M_PI, 0.1, true));
+
+    m_transformObjects.append(m_groups.last());
 }

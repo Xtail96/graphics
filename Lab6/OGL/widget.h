@@ -39,6 +39,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     void initShaders();
+    void initSandGlass();
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
@@ -50,7 +51,7 @@ private:
     //QVector< QSharedPointer<SimpleObject3D> > m_objects;
 
     // все группы объектов на сцене
-    //QVector< QSharedPointer<Group3D> > m_groups;
+    QVector< QSharedPointer<Group3D> > m_groups;
 
     // все корневые группы объектов на сцене
     QVector< QSharedPointer<Transformational> > m_transformObjects;
