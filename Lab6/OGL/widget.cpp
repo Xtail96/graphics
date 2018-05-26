@@ -335,6 +335,7 @@ SimpleObject3D *Widget::initSandGlass()
     VertexData center = VertexData(QVector3D(0.0, 0.0, 0.0),
                                    QVector2D(0.0, 0.0),
                                    QVector3D(0.0, 0.0, 1.0));
+    vertexes.push_back(center);
 
     QList<QVector3D> diskPoints;
     for(float i = 0; i <= (M_PI + 0.1) / 2; i += 0.1)
@@ -342,9 +343,8 @@ SimpleObject3D *Widget::initSandGlass()
         diskPoints.push_back(QVector3D(0.0 + sin(i) * 1.0, 0.0 + cos(i) * 1.0, 0.0));
     }
 
-    for(int i = 1; i < diskPoints.size(); i++)
+    for(int i = 1; i < diskPoints.size(); i ++)
     {
-        vertexes.push_back(center);
         vertexes.push_back(VertexData(QVector3D(diskPoints[i].x(), diskPoints[i].y(), 0.0),
                                       QVector2D(0.0, 1.0),
                                       QVector3D(0.0, 0.0, 1.0)));
@@ -354,19 +354,18 @@ SimpleObject3D *Widget::initSandGlass()
     }
 
     int count = vertexes.size();
-    for(int i = 0; i < count; i++)
+    for(int i = 0; i < count - 1; i += 2)
     {
-        indexes.push_back(i);
-        //indexes.push_back(0);
-        //indexes.push_back(i + 1);
-        //indexes.push_back(i + 2);
+        indexes.push_back(0);
+        indexes.push_back(i + 1);
+        indexes.push_back(i + 2);
     }
 
     /*for(int i = 0 ; i < vertexes.size(); i++)
     {
         qDebug() << "#" << i << vertexes[i].position << vertexes[i].texCoords << vertexes[i].normal;
-    }
-    qDebug() << indexes;*/
+    }*/
+    //qDebug() << indexes;
 
     return new SimpleObject3D(vertexes, indexes, QImage(":/123.jpg"));
 }
