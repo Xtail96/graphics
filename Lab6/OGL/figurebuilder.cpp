@@ -148,6 +148,24 @@ SimpleObject3D *FigureBuilder::initDiskSector(QVector3D point, double r, double 
 SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, double r1, double r2, double step)
 {
 
+    double zNormal;
+    double delta = r2 - r1;
+    if(delta > 0)
+    {
+        zNormal = 1.0;
+    }
+    else
+    {
+        if(delta < 0)
+        {
+            zNormal = -1.0;
+        }
+        else
+        {
+            zNormal = 0.0;
+        }
+    }
+
     QVector<VertexData> vertexes;
     QVector<GLuint> indexes;
 
@@ -156,9 +174,11 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
                                    QVector3D(0.0, 0.0, 1.0));
 
     QList<QVector3D> disk1Points;
+    QList<QVector3D> disk1Normals;
     for(float i = 0; i <= 2 * M_PI + 0.1; i += step)
     {
         disk1Points.push_back(QVector3D(disk1Center.position.x() + sin(i) * r1, disk1Center.position.y() + cos(i) * r1, disk1Center.position.z()));
+        disk1Normals.push_back(QVector3D(sin(i), cos(i), zNormal));
     }
 
 
@@ -188,7 +208,7 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
         }
         vertexes.push_back(VertexData(QVector3D(disk1Points[i].x(), disk1Points[i].y(), disk1Points[i].z()),
                                       texture,
-                                      QVector3D(0.0, 0.0, 1.0)));
+                                      disk1Normals[i]));
     }
 
     for(int i = 0; i < disk2Points.size(); i += 1)
@@ -207,7 +227,7 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
 
         vertexes.push_back(VertexData(QVector3D(disk2Points[i].x(), disk2Points[i].y(), disk2Points[i].z()),
                                       texture,
-                                      QVector3D(0.0, 0.0, 1.0)));
+                                      disk1Normals[i]));
     }
 
 

@@ -30,7 +30,18 @@ void Widget::initializeGL()
     double r1 = 1;
     double r2 = 1.5;
     double step = 0.1;
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
 
+    center1 = QVector3D(0.0, 0.0, -0.5);
+    center2 = QVector3D(0.0, 0.0, -1.0);
+    r1 = 1.5;
+    r2 = 1.5;
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
+
+    center1 = QVector3D(0.0, 0.0, -1.0);
+    center2 = QVector3D(0.0, 0.0, -1.5);
+    r1 = 1.5;
+    r2 = 1;
     m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
 
     //m_transformObjects[0]->translate(QVector3D(-0.5, 0.0, 0.0));
