@@ -21,6 +21,8 @@ public:
     void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions) override;
 
     void addObject(Transformational* obj);
+    void removeObject(Transformational* obj);
+    void removeObject(int index);
 private:
     // составляющие модельно-видовой матрицы
     QQuaternion m_rotate;
@@ -29,6 +31,8 @@ private:
     QMatrix4x4 m_globalTransform;
 
     QVector<Transformational*> m_objects;
+
+    void setViewMatrix();
 };
 
 #endif // GROUP3D_H

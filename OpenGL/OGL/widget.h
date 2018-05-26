@@ -11,6 +11,7 @@
 #include <QOpenGLContext>
 #include <QBasicTimer>
 #include <QtMath>
+#include <QKeyEvent>
 
 #include "simpleobject3d.h"
 #include "group3d.h"
@@ -34,6 +35,7 @@ protected:
     void mouseMoveEvent(QMouseEvent* event);
     void wheelEvent(QWheelEvent *event);
     void timerEvent(QTimerEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
     void initShaders();
     void initCube(float width);
@@ -63,7 +65,7 @@ private:
     float m_angleGroup2 = 0.0f;
     float m_angleMain = 0.0f;
 
-    Camera3D* m_camera;
+    QSharedPointer<Camera3D> m_camera;
 
 };
 

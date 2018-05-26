@@ -3,13 +3,13 @@
 Widget::Widget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
-    m_camera = new Camera3D();
+    m_camera = QSharedPointer<Camera3D>(new Camera3D());
     m_camera->translate(QVector3D(0.0f, 0.0f, -5.0f));
 }
 
 Widget::~Widget()
 {
-    delete m_camera;
+    //delete m_camera;
 }
 
 void Widget::initializeGL()
@@ -65,6 +65,10 @@ void Widget::initializeGL()
     m_groups[2]->addObject(m_groups[1].data());
 
     m_transformObjects.append(m_groups[2]);
+
+    //m_groups[0]->addObject(m_camera);
+
+    m_transformObjects.append(m_camera);
 
     m_timer.start(30, this);
 }
@@ -170,6 +174,42 @@ void Widget::timerEvent(QTimerEvent *event)
     m_angleMain += M_PI / 720.0f;
 
     event->accept();
+    update();
+}
+
+void Widget::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Left:
+        m_groups[0]->removeObject(m_camera.data());
+        m_groups[1]->removeObject(m_camera.data());
+        m_transformObjects.removeAll(m_camera);
+        m_groups[1]->addObject(m_camera.data());
+        break;
+    case Qt::Key_Right:
+        m_groups[0]->removeObject(m_camera.data());
+        m_groups[1]->removeObject(m_camera.data());
+        m_transformObjects.removeAll(m_camera);
+        m_groups[0]->addObject(m_camera.data());
+        break;
+    case Qt::Key_Down:
+        m_groups[0]->removeObject(m_camera.data());
+        m_groups[1]->removeObject(m_camera.data());
+        m_transformObjects.removeAll(m_camera);
+        m_transformObjects.append(m_camera);
+        break;
+    case Qt::Key_Up:
+        m_groups[0]->removeObject(m_camera.data());
+        m_groups[1]->removeObject(m_camera.data());
+        m_transformObjects.removeAll(m_camera);
+        m_transformObjects.append(m_camera);
+
+        QMatrix4x4 tmp;
+        tmp.setToIdentity();
+        m_camera->setGlobalTransform(tmp);
+        break;
+    }
+
     update();
 }
 

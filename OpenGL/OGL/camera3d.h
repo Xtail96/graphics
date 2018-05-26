@@ -21,12 +21,15 @@ public:
     void setGlobalTransform(const QMatrix4x4 &g) override;
     void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions = 0) override;
 
+    void setViewMatrix();
 private:
     // составляющие модельно-видовой матрицы
     QQuaternion m_rotate;
     QVector3D m_translate;
     float m_scale;
     QMatrix4x4 m_globalTransform;
+
+    QMatrix4x4 m_viewMatrix;
 };
 
 #endif // CAMERA3D_H
