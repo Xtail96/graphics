@@ -18,13 +18,13 @@ void main(void)
     float specularFactor = 50.0;
     float ambientFactor = 0.1;
 
-    vec4 diffuseColor = diffuseMaterialColor * u_lightPower * max(0.0, dot(v_normal, -lightVector)) / (1.0 + 0.25 * len * len);
+    vec4 diffuseColor = diffuseMaterialColor * u_lightPower * max(0.0, dot(v_normal, -lightVector)); // / (1.0 + 0.25 * len * len);
     resultColor += diffuseColor;
 
     vec4 ambientColor = ambientFactor * diffuseMaterialColor;
     resultColor += ambientColor;
 
-    vec4 specularColor = vec4(1.0, 1.0, 1.0, 1.0) * u_lightPower * pow(max(0.0, dot(reflectLight, -eyeVector)), specularFactor) / (1.0 + 0.25 * len * len);
+    vec4 specularColor = vec4(1.0, 1.0, 1.0, 1.0) * u_lightPower * pow(max(0.0, dot(reflectLight, -eyeVector)), specularFactor); // / (1.0 + 0.25 * len * len);
     resultColor += specularColor;
 
     gl_FragColor = resultColor;

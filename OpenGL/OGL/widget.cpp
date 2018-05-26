@@ -1,7 +1,8 @@
 #include "widget.h"
 
 Widget::Widget(QWidget *parent)
-    : QOpenGLWidget(parent)
+    : QOpenGLWidget(parent),
+      m_z(-5.0)
 {
 
 }
@@ -31,7 +32,7 @@ void Widget::resizeGL(int w, int h)
 {
     float aspect = w / (float) h;
     m_projectionMatrix.setToIdentity();
-    m_projectionMatrix.perspective(45, aspect, 0.1f, 10.0f);
+    m_projectionMatrix.perspective(45, aspect, 0.01f, 100.0f);
 }
 
 void Widget::paintGL()
@@ -40,14 +41,14 @@ void Widget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_viewMatrix.setToIdentity();
-    m_viewMatrix.translate(0.0, 0.0, -5.0);
+    m_viewMatrix.translate(0.0, 0.0, m_z);
     m_viewMatrix.rotate(m_rotation);
 
     m_program.bind();
     m_program.setUniformValue("u_projectionMatrix", m_projectionMatrix);
     m_program.setUniformValue("u_viewMatrix", m_viewMatrix);
     m_program.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0));
-    m_program.setUniformValue("u_lightPower", 5.0f);
+    m_program.setUniformValue("u_lightPower", 1.0f);
 
     for(auto object : m_objects)
     {
@@ -81,6 +82,22 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
 
     m_rotation = QQuaternion::fromAxisAndAngle(axis, angle) * m_rotation;
 
+    update();
+}
+
+void Widget::wheelEvent(QWheelEvent *event)
+{
+    if(event->delta() > 0)
+    {
+        m_z += 0.25;
+    }
+    else
+    {
+        if(event->delta() < 0)
+        {
+            m_z -= 0.25;
+        }
+    }
     update();
 }
 

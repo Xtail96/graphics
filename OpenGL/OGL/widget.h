@@ -27,6 +27,7 @@ protected:
 
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent* event);
+    void wheelEvent(QWheelEvent *event);
 
     void initShaders();
     void initCube(float width);
@@ -45,6 +46,9 @@ private:
     // для вращения сцены
     QVector2D m_mousePosition;
     QQuaternion m_rotation;
+
+    // для приближения/отдаления сцены по оси Z
+    float m_z;
 };
 
 #endif // WIDGET_H
