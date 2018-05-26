@@ -39,3 +39,11 @@ DISTFILES += \
 RESOURCES += \
     shaders.qrc \
     textures.qrc
+
+win32-g*{
+    LIBS += -lopengl32
+}
+
+win32-msvs*{
+    LIBS += opengl32.lib
+}

@@ -20,11 +20,11 @@ void Widget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     initShaders();
-    initCube(1.0f);
-    m_objects[0]->translate(QVector3D(-0.5, 0.0, 0.0));
+    initCube(2.0f);
+    m_objects[0]->translate(QVector3D(-1.5, 0.0, 0.0));
 
-    initCube(0.5f);
-    m_objects[1]->translate(QVector3D(0.5, 0.0, 0.0));
+    initCube(2.0f);
+    m_objects[1]->translate(QVector3D(1.5, 0.0, 0.0));
 }
 
 void Widget::resizeGL(int w, int h)
