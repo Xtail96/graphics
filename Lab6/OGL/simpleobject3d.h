@@ -6,6 +6,7 @@
 #include <QOpenGLTexture>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
+#include <QtMath>
 
 #include "transformational.h"
 
@@ -47,6 +48,8 @@ public:
     void scale(const float &s) override;
     void setGlobalTransform(const QMatrix4x4 &g) override;
     void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions) override;
+
+    static QVector2D rotateMatrix(QVector2D point, double angle);
 
 private:
     QOpenGLBuffer m_vertexBuffer;

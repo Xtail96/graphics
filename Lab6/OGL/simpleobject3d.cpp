@@ -131,6 +131,14 @@ void SimpleObject3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *funct
     m_texture->release();
 }
 
+QVector2D SimpleObject3D::rotateMatrix(QVector2D point, double angle)
+{
+    QVector2D result;
+    result.setX(point.x() * qCos(angle) - point.y() * qSin(angle));
+    result.setY(point.x() * qSin(angle) + point.y() * qCos(angle));
+    return result;
+}
+
 void SimpleObject3D::translate(const QVector3D &t)
 {
     m_translate += t;

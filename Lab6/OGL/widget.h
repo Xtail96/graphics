@@ -39,6 +39,7 @@ protected:
 
     void initShaders();
     SimpleObject3D *initCube(float width);
+    SimpleObject3D *initSandGlass();
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
