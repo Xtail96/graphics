@@ -23,8 +23,15 @@ void Widget::initializeGL()
     initShaders();
 
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
-    //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(QVector3D(0.0, 0.0, 0.0), 1, 2 * M_PI)));
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initSandGlass()));
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(QVector3D(0.0, 0.0, 0.0), 1, 2 * M_PI)));
+
+    QVector3D center1 = QVector3D(0.0, 0.0, 0.0);
+    QVector3D center2 = QVector3D(0.0, 0.0, -0.5);
+    double r1 = 1;
+    double r2 = 1.5;
+    double step = 0.1;
+
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
 
     //m_transformObjects[0]->translate(QVector3D(-0.5, 0.0, 0.0));
 
