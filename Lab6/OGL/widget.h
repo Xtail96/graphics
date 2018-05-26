@@ -38,7 +38,7 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
     void initShaders();
-    void initCube(float width);
+    SimpleObject3D *initCube(float width);
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
@@ -47,10 +47,10 @@ private:
     QOpenGLShaderProgram m_program;
 
     // все объекты на сцене
-    QVector< QSharedPointer<SimpleObject3D> > m_objects;
+    //QVector< QSharedPointer<SimpleObject3D> > m_objects;
 
     // все группы объектов на сцене
-    QVector< QSharedPointer<Group3D> > m_groups;
+    //QVector< QSharedPointer<Group3D> > m_groups;
 
     // все корневые группы объектов на сцене
     QVector< QSharedPointer<Transformational> > m_transformObjects;

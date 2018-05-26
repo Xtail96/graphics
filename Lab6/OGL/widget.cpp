@@ -22,14 +22,11 @@ void Widget::initializeGL()
 
     initShaders();
 
-    /*initCube(2.0f);
-    m_objects[0]->translate(QVector3D(-1.5, 0.0, 0.0));
+    m_transformObjects.append(QSharedPointer<Transformational>(initCube(1.0f)));
+    m_transformObjects.append(m_camera);
 
-    initCube(2.0f);
-    m_objects[1]->translate(QVector3D(1.5, 0.0, 0.0));*/
 
-    float step = 2.0f;
-
+    /*float step = 2.0f;
     m_groups.append(QSharedPointer<Group3D>(new Group3D()));
     for(float x = -step; x <= step; x += step)
     {
@@ -64,11 +61,7 @@ void Widget::initializeGL()
     m_groups[2]->addObject(m_groups[0].data());
     m_groups[2]->addObject(m_groups[1].data());
 
-    m_transformObjects.append(m_groups[2]);
-
-    //m_groups[0]->addObject(m_camera);
-
-    m_transformObjects.append(m_camera);
+    m_transformObjects.append(m_groups[2]);*/
 
     //m_timer.start(30, this);
 }
@@ -145,7 +138,7 @@ void Widget::wheelEvent(QWheelEvent *event)
 
 void Widget::timerEvent(QTimerEvent *event)
 {
-    for(int i = 0; i < m_objects.size(); i++)
+    /*for(int i = 0; i < m_objects.size(); i++)
     {
         if(i % 2 == 0)
         {
@@ -174,12 +167,12 @@ void Widget::timerEvent(QTimerEvent *event)
     m_angleMain += M_PI / 720.0f;
 
     event->accept();
-    update();
+    update();*/
 }
 
 void Widget::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
+    /*switch (event->key()) {
     case Qt::Key_Left:
         m_groups[0]->removeObject(m_camera.data());
         m_groups[1]->removeObject(m_camera.data());
@@ -210,7 +203,7 @@ void Widget::keyPressEvent(QKeyEvent *event)
         break;
     }
 
-    update();
+    update();*/
 }
 
 void Widget::initShaders()
@@ -234,7 +227,7 @@ void Widget::initShaders()
     }
 }
 
-void Widget::initCube(float width)
+SimpleObject3D* Widget::initCube(float width)
 {
     float width_div_2 = width / 2.0f;
     QVector<VertexData> vertexes;
@@ -387,5 +380,5 @@ void Widget::initCube(float width)
         indexes.append(i + 3);
     }
 
-    m_objects.append(QSharedPointer<SimpleObject3D>(new SimpleObject3D(vertexes, indexes, QImage(":/123.jpg"))));
+   return new SimpleObject3D(vertexes, indexes, QImage(":/123.jpg"));
 }
