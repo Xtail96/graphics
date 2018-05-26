@@ -7,6 +7,8 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 
+#include "transformational.h"
+
 // структура для описания вершины
 struct VertexData
 {
@@ -31,7 +33,7 @@ struct VertexData
     QVector3D normal;
 };
 
-class SimpleObject3D
+class SimpleObject3D : public Transformational
 {
 public:
     SimpleObject3D();
@@ -39,14 +41,23 @@ public:
     ~SimpleObject3D();
 
     void init(const QVector<VertexData> &vertexData, const QVector<GLuint> &indexes, const QImage &texture);
-    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions);
-    void translate(const QVector3D &translateVector);
+
+    void rotate(const QQuaternion &r) override;
+    void translate(const QVector3D &t) override;
+    void scale(const float &s) override;
+    void setGlobalTransform(const QMatrix4x4 &g) override;
+    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions) override;
 
 private:
     QOpenGLBuffer m_vertexBuffer;
     QOpenGLBuffer m_indexBuffer;
-    QMatrix4x4 m_modelMatrix;
     QOpenGLTexture *m_texture;
+
+    // составляющие модельно-видовой матрицы
+    QQuaternion m_rotate;
+    QVector3D m_translate;
+    float m_scale;
+    QMatrix4x4 m_globalTransform;
 };
 
 #endif // SIMPLEOBJECT3D_H

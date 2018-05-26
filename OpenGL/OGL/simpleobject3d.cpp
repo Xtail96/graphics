@@ -3,7 +3,8 @@
 SimpleObject3D::SimpleObject3D() :
     m_vertexBuffer(QOpenGLBuffer::VertexBuffer),
     m_indexBuffer(QOpenGLBuffer::IndexBuffer),
-    m_texture(0)
+    m_texture(0),
+    m_scale(1.0f)
 {
 
 }
@@ -11,7 +12,8 @@ SimpleObject3D::SimpleObject3D() :
 SimpleObject3D::SimpleObject3D(const QVector<VertexData> &vertexData, const QVector<GLuint> &indexes, const QImage &texture) :
     m_vertexBuffer(QOpenGLBuffer::VertexBuffer),
     m_indexBuffer(QOpenGLBuffer::IndexBuffer),
-    m_texture(0)
+    m_texture(0),
+    m_scale(1.0f)
 {
     init(vertexData, indexes, texture);
 }
@@ -72,8 +74,11 @@ void SimpleObject3D::init(const QVector<VertexData> &vertexData, const QVector<G
     m_texture->setMinificationFilter(QOpenGLTexture::Nearest);
     m_texture->setMagnificationFilter(QOpenGLTexture::Linear);
     m_texture->setWrapMode(QOpenGLTexture::Repeat);
+}
 
-    m_modelMatrix.setToIdentity();
+void SimpleObject3D::rotate(const QQuaternion &r)
+{
+    m_rotate = r * m_rotate;
 }
 
 void SimpleObject3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
@@ -85,7 +90,18 @@ void SimpleObject3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *funct
 
     m_texture->bind(0);
     program->setUniformValue("u_texture", 0);
-    program->setUniformValue("u_modelMatrix", m_modelMatrix);
+
+
+    QMatrix4x4 modelMatrix;
+    modelMatrix.setToIdentity();
+
+    // важен порядок выполнения
+    modelMatrix.translate(m_translate);
+    modelMatrix.rotate(m_rotate);
+    modelMatrix.scale(m_scale);
+    modelMatrix = m_globalTransform * modelMatrix;
+
+    program->setUniformValue("u_modelMatrix", modelMatrix);
 
     m_vertexBuffer.bind();
 
@@ -115,7 +131,18 @@ void SimpleObject3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *funct
     m_texture->release();
 }
 
-void SimpleObject3D::translate(const QVector3D &translateVector)
+void SimpleObject3D::translate(const QVector3D &t)
 {
-    m_modelMatrix.translate(translateVector);
+    m_translate += t;
+    //m_modelMatrix.translate(t);
+}
+
+void SimpleObject3D::scale(const float &s)
+{
+    m_scale *= s;
+}
+
+void SimpleObject3D::setGlobalTransform(const QMatrix4x4 &g)
+{
+    m_globalTransform = g;
 }

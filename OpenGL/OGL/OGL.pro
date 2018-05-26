@@ -30,7 +30,8 @@ SOURCES += \
 
 HEADERS += \
         widget.h \
-    simpleobject3d.h
+    simpleobject3d.h \
+    transformational.h
 
 DISTFILES += \
     vshader.vsh \
