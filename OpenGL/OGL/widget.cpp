@@ -21,11 +21,50 @@ void Widget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     initShaders();
-    initCube(2.0f);
+
+    /*initCube(2.0f);
     m_objects[0]->translate(QVector3D(-1.5, 0.0, 0.0));
 
     initCube(2.0f);
-    m_objects[1]->translate(QVector3D(1.5, 0.0, 0.0));
+    m_objects[1]->translate(QVector3D(1.5, 0.0, 0.0));*/
+
+    float step = 2.0f;
+
+    m_groups.append(new Group3D());
+    for(float x = -step; x <= step; x += step)
+    {
+        for(float y = -step; y <= step; y += step)
+        {
+            for(float z = -step; z <= step; z += step)
+            {
+                initCube(1.0f);
+                m_objects[m_objects.size() - 1]->translate(QVector3D(x, y, z));
+                m_groups[0]->addObject(m_objects[m_objects.size() - 1]);
+            }
+        }
+    }
+    m_groups[0]->translate(QVector3D(-4.0, 0.0, 0.0));
+
+    m_groups.append(new Group3D());
+    for(float x = -step; x <= step; x += step)
+    {
+        for(float y = -step; y <= step; y += step)
+        {
+            for(float z = -step; z <= step; z += step)
+            {
+                initCube(1.0f);
+                m_objects[m_objects.size() - 1]->translate(QVector3D(x, y, z));
+                m_groups[1]->addObject(m_objects[m_objects.size() - 1]);
+            }
+        }
+    }
+    m_groups[1]->translate(QVector3D(4.0, 0.0, 0.0));
+
+    m_groups.append(new Group3D());
+    m_groups[2]->addObject(m_groups[0]);
+    m_groups[2]->addObject(m_groups[1]);
+
+    m_transformObjects.append(m_groups[2]);
 }
 
 void Widget::resizeGL(int w, int h)
@@ -50,7 +89,7 @@ void Widget::paintGL()
     m_program.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0));
     m_program.setUniformValue("u_lightPower", 1.0f);
 
-    for(auto object : m_objects)
+    for(auto object : m_transformObjects)
     {
         object->draw(&m_program, context()->functions());
     }

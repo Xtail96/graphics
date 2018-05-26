@@ -11,6 +11,7 @@
 #include <QOpenGLContext>
 
 #include "simpleobject3d.h"
+#include "group3d.h"
 
 class Widget : public QOpenGLWidget
 {
@@ -42,6 +43,8 @@ private:
     QOpenGLShaderProgram m_program;
 
     QVector<SimpleObject3D*> m_objects;
+    QVector<Group3D*> m_groups;
+    QVector<Transformational*> m_transformObjects;
 
     // для вращения сцены
     QVector2D m_mousePosition;

@@ -134,7 +134,6 @@ void SimpleObject3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *funct
 void SimpleObject3D::translate(const QVector3D &t)
 {
     m_translate += t;
-    //m_modelMatrix.translate(t);
 }
 
 void SimpleObject3D::scale(const float &s)
