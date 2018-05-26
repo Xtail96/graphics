@@ -42,8 +42,13 @@ private:
     // для подключения шейдеров
     QOpenGLShaderProgram m_program;
 
+    // все объекты на сцене
     QVector<SimpleObject3D*> m_objects;
+
+    // все группы объектов на сцене
     QVector<Group3D*> m_groups;
+
+    // все корневые группы объектов на сцене
     QVector<Transformational*> m_transformObjects;
 
     // для вращения сцены
