@@ -24,7 +24,7 @@ void Widget::initializeGL()
 
     //m_transformObjects.append(QSharedPointer<Transformational>(initCube(1.0f)));
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(1)));
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(QVector3D(0, 0, 0), 1, M_PI / 2)));
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(QVector3D(0, 0, 0), 2, 2 * M_PI)));
 
     m_transformObjects[0]->translate(QVector3D(-0.5, 0.0, 0.0));
 

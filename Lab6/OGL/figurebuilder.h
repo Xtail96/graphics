@@ -9,7 +9,7 @@ public:
     FigureBuilder();
 
     static SimpleObject3D *initCube(float width);
-    static SimpleObject3D *initDiskSector(QVector3D point, double r, double angle);
+    static SimpleObject3D *initDiskSector(QVector3D point = QVector3D(0.0f, 0.0f, 0.0f), double r = 1.0, double angle = M_PI / 2);
     static SimpleObject3D *initSandGlass();
 };
 

@@ -107,15 +107,15 @@ SimpleObject3D *FigureBuilder::initDiskSector(QVector3D point, double r, double 
     QVector<VertexData> vertexes;
     QVector<GLuint> indexes;
 
-    VertexData center = VertexData(QVector3D(0.0, 0.0, 0.0),
+    VertexData center = VertexData(point,
                                    QVector2D(0.0, 0.0),
                                    QVector3D(0.0, 0.0, 1.0));
     vertexes.push_back(center);
 
     QList<QVector3D> diskPoints;
-    for(float i = 0; i <= (M_PI + 0.1) / 2; i += 0.1)
+    for(float i = 0; i <= angle + 0.1; i += 0.1)
     {
-        diskPoints.push_back(QVector3D(0.0 + sin(i) * 1.0, 0.0 + cos(i) * 1.0, 0.0));
+        diskPoints.push_back(QVector3D(0.0 + sin(i) * r, 0.0 + cos(i) * r, 0.0));
     }
 
     for(int i = 1; i < diskPoints.size(); i ++)
