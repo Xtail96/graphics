@@ -5,6 +5,11 @@ Group3D::Group3D()
     m_scale = 1.0;
 }
 
+Group3D::~Group3D()
+{
+
+}
+
 void Group3D::rotate(const QQuaternion &r)
 {
     m_rotate = r * m_rotate;

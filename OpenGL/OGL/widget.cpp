@@ -1,15 +1,15 @@
 #include "widget.h"
 
 Widget::Widget(QWidget *parent)
-    : QOpenGLWidget(parent),
-      m_z(-5.0)
+    : QOpenGLWidget(parent)
 {
-
+    m_camera = new Camera3D();
+    m_camera->translate(QVector3D(0.0f, 0.0f, -5.0f));
 }
 
 Widget::~Widget()
 {
-
+    delete m_camera;
 }
 
 void Widget::initializeGL()
@@ -30,7 +30,7 @@ void Widget::initializeGL()
 
     float step = 2.0f;
 
-    m_groups.append(new Group3D());
+    m_groups.append(QSharedPointer<Group3D>(new Group3D()));
     for(float x = -step; x <= step; x += step)
     {
         for(float y = -step; y <= step; y += step)
@@ -39,13 +39,13 @@ void Widget::initializeGL()
             {
                 initCube(1.0f);
                 m_objects[m_objects.size() - 1]->translate(QVector3D(x, y, z));
-                m_groups[0]->addObject(m_objects[m_objects.size() - 1]);
+                m_groups[0]->addObject(m_objects[m_objects.size() - 1].data());
             }
         }
     }
     m_groups[0]->translate(QVector3D(-4.0, 0.0, 0.0));
 
-    m_groups.append(new Group3D());
+    m_groups.append(QSharedPointer<Group3D>(new Group3D()));
     for(float x = -step; x <= step; x += step)
     {
         for(float y = -step; y <= step; y += step)
@@ -54,15 +54,15 @@ void Widget::initializeGL()
             {
                 initCube(1.0f);
                 m_objects[m_objects.size() - 1]->translate(QVector3D(x, y, z));
-                m_groups[1]->addObject(m_objects[m_objects.size() - 1]);
+                m_groups[1]->addObject(m_objects[m_objects.size() - 1].data());
             }
         }
     }
     m_groups[1]->translate(QVector3D(4.0, 0.0, 0.0));
 
-    m_groups.append(new Group3D());
-    m_groups[2]->addObject(m_groups[0]);
-    m_groups[2]->addObject(m_groups[1]);
+    m_groups.append(QSharedPointer<Group3D>(new Group3D()));
+    m_groups[2]->addObject(m_groups[0].data());
+    m_groups[2]->addObject(m_groups[1].data());
 
     m_transformObjects.append(m_groups[2]);
 
@@ -81,15 +81,12 @@ void Widget::paintGL()
     // выставляем флаги
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_viewMatrix.setToIdentity();
-    m_viewMatrix.translate(0.0, 0.0, m_z);
-    m_viewMatrix.rotate(m_rotation);
-
     m_program.bind();
     m_program.setUniformValue("u_projectionMatrix", m_projectionMatrix);
-    m_program.setUniformValue("u_viewMatrix", m_viewMatrix);
     m_program.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0));
     m_program.setUniformValue("u_lightPower", 1.0f);
+
+    m_camera->draw(&m_program);
 
     for(auto object : m_transformObjects)
     {
@@ -121,7 +118,7 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
     // вектор, вокруг которого выполняется поворот, перпендикулярен направлению движения мыши
     QVector3D axis = QVector3D(diff.y(), diff.x(), 0.0);
 
-    m_rotation = QQuaternion::fromAxisAndAngle(axis, angle) * m_rotation;
+    m_camera->rotate(QQuaternion::fromAxisAndAngle(axis, angle));
 
     update();
 }
@@ -130,13 +127,13 @@ void Widget::wheelEvent(QWheelEvent *event)
 {
     if(event->delta() > 0)
     {
-        m_z += 0.25;
+        m_camera->translate(QVector3D(0.0f, 0.0f, 0.25f));
     }
     else
     {
         if(event->delta() < 0)
         {
-            m_z -= 0.25;
+            m_camera->translate(QVector3D(0.0f, 0.0f, -0.25f));
         }
     }
     update();
@@ -350,5 +347,5 @@ void Widget::initCube(float width)
         indexes.append(i + 3);
     }
 
-    m_objects.append(new SimpleObject3D(vertexes, indexes, QImage(":/123.jpg")));
+    m_objects.append(QSharedPointer<SimpleObject3D>(new SimpleObject3D(vertexes, indexes, QImage(":/123.jpg"))));
 }

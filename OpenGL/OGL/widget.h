@@ -14,6 +14,7 @@
 
 #include "simpleobject3d.h"
 #include "group3d.h"
+#include "camera3d.h"
 
 class Widget : public QOpenGLWidget
 {
@@ -40,27 +41,20 @@ private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
 
-    // матрица вида
-    QMatrix4x4 m_viewMatrix;
-
     // для подключения шейдеров
     QOpenGLShaderProgram m_program;
 
     // все объекты на сцене
-    QVector<SimpleObject3D*> m_objects;
+    QVector< QSharedPointer<SimpleObject3D> > m_objects;
 
     // все группы объектов на сцене
-    QVector<Group3D*> m_groups;
+    QVector< QSharedPointer<Group3D> > m_groups;
 
     // все корневые группы объектов на сцене
-    QVector<Transformational*> m_transformObjects;
+    QVector< QSharedPointer<Transformational> > m_transformObjects;
 
     // для вращения сцены
     QVector2D m_mousePosition;
-    QQuaternion m_rotation;
-
-    // для приближения/отдаления сцены по оси Z
-    float m_z;
 
     // для анимации
     QBasicTimer m_timer;
@@ -68,6 +62,8 @@ private:
     float m_angleGroup1 = 0.0f;
     float m_angleGroup2 = 0.0f;
     float m_angleMain = 0.0f;
+
+    Camera3D* m_camera;
 
 };
 
