@@ -44,7 +44,7 @@ void Widget::initializeGL()
     r2 = 1;
     m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initBelt(center1, center2, r1, r2, step)));
 
-    //m_transformObjects[0]->translate(QVector3D(-0.5, 0.0, 0.0));
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initDiskSector(center2, r2, 2 * M_PI, 0.1, true)));
 
 
     /*float step = 2.0f;
