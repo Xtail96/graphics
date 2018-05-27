@@ -214,12 +214,12 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
         QVector2D texture;
         if(i % 2 == 0)
         {
-            texture.setX(0.0);
+            texture.setX(1.0);
             texture.setY(0.0);
         }
         else
         {
-            texture.setX(1.0);
+            texture.setX(0.0);
             texture.setY(1.0);
         }
         vertexes.push_back(VertexData(QVector3D(disk1Points[i].x(), disk1Points[i].y(), disk1Points[i].z()),
@@ -232,12 +232,12 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
         QVector2D texture;
         if(i % 2 == 0)
         {
-            texture.setX(0.0);
+            texture.setX(1.0);
             texture.setY(0.0);
         }
         else
         {
-            texture.setX(1.0);
+            texture.setX(0.0);
             texture.setY(1.0);
         }
 
