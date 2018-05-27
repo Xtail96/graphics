@@ -42,12 +42,12 @@ void main(void)
     resultColor += specularColor;
 
     // добавляем волны
-    resultColor += texture2D(u_texture, SineWave(v_texcoord));
+    //resultColor += texture2D(u_texture, SineWave(v_texcoord));
 
-    float luminance = resultColor.r * 0.299 + resultColor.g * 0.587 + resultColor.b * 0.114;
+    //float luminance = resultColor.r * 0.299 + resultColor.g * 0.587 + resultColor.b * 0.114;
 
     // черно - белая картинка
-    resultColor = vec4(luminance, luminance, luminance, 1.0);
+    //resultColor = vec4(luminance, luminance, luminance, 1.0);
 
     gl_FragColor = resultColor;
 }
