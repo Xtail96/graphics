@@ -27,5 +27,10 @@ void main(void)
     vec4 specularColor = vec4(1.0, 1.0, 1.0, 1.0) * u_lightPower * pow(max(0.0, dot(reflectLight, -eyeVector)), specularFactor); // / (1.0 + 0.25 * len * len);
     resultColor += specularColor;
 
+    float luminance = resultColor.r * 0.299 + resultColor.g * 0.587 + resultColor.b * 0.114;
+
+    // черно - белая картинка
+    resultColor = vec4(luminance, luminance, luminance, 1.0);
+
     gl_FragColor = resultColor;
 }
