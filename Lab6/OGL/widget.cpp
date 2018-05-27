@@ -21,9 +21,9 @@ void Widget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     initShaders();
-    initSandGlass();
+    //initSandGlass();
 
-    //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(0.1)));
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
 
     //m_timer.start(30, this);
 }
