@@ -23,7 +23,7 @@ void Widget::initializeGL()
     initShaders();
     initSandGlass();
 
-    //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
+    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(0.1)));
 
     //m_timer.start(30, this);
 }
@@ -198,6 +198,7 @@ void Widget::initSandGlass()
     double rTop = 0.25;
 
     QVector3D border1 = QVector3D(0.0, 0.0, 0.8);
+    double rBorder1 = 0.5;
 
     QVector3D middle = QVector3D(0.0, 0.0, 0.0);
     double rMiddle = 0.10;
@@ -207,54 +208,47 @@ void Widget::initSandGlass()
 
     m_groups.last()->addObject(FigureBuilder::initDiskSector(top, rTop, 2 * M_PI));
 
-    m_groups.last()->addObject(FigureBuilder::initBelt(top, QVector3D(0.0, 0.0, 1.05), rTop, rTop + 0.05));
+   // m_groups.last()->addObject(FigureBuilder::initBelt(top, QVector3D(0.0, 0.0, 1.05), rTop, rTop + 0.05));
 
-    double centersDelta = 0.125;
-    QVector3D currentCenter = QVector3D(0.0, 0.0, 1.05);
+
+    double radiusDelta = 0.05;
+    double radiusCurrent = rTop;
+
+    QVector3D currentCenter = QVector3D(0.0, 0.0, 1.0);
     QVector3D nextCenter = QVector3D(currentCenter.x(),
                                      currentCenter.y(),
-                                     currentCenter.z() - centersDelta);
+                                     currentCenter.z() - 0.3 * radiusCurrent * radiusCurrent);
 
-    double radiusDelta = 0.01; //0.25;
-    double radiusCurrent = rTop + 0.05;
-    double radiusNext = radiusCurrent + radiusDelta;
-
-    while(currentCenter.z() > border1.z() && radiusCurrent > 0)
+    for(double r = radiusCurrent + radiusDelta; r < rBorder1; r += radiusDelta)
     {
-        qDebug() << radiusCurrent << radiusNext << currentCenter.z() << nextCenter.z();
+        //qDebug() << currentCenter << nextCenter << radiusCurrent << r;
 
-        m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, nextCenter, radiusCurrent, radiusNext));
+        m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, nextCenter, radiusCurrent, r));
+
+        radiusCurrent = r;
         currentCenter = nextCenter;
-        radiusCurrent = radiusNext;
-
 
         nextCenter = QVector3D(currentCenter.x(),
                                currentCenter.y(),
-                               radiusCurrent * radiusCurrent);
-        //radiusDelta = radiusDelta - 0.1;
-        //centersDelta = radiusDelta * radiusDelta * 2;
-        radiusNext = radiusCurrent + radiusDelta;
+                               currentCenter.z() - 0.3 * r * r);
     }
 
-    //qDebug() << radiusCurrent << rMiddle << radiusDelta << centersDelta;
-    centersDelta = 0.25;
-    /*while(currentCenter.z() > middle.z() && radiusCurrent > rMiddle)
+    for(double r = radiusCurrent; r > rMiddle; r -= radiusDelta)
     {
-        m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, nextCenter, radiusCurrent, radiusNext));
+        //qDebug() << currentCenter << nextCenter << radiusCurrent << r;
+
+        m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, nextCenter, radiusCurrent, r));
+
+        radiusCurrent = r;
         currentCenter = nextCenter;
+
         nextCenter = QVector3D(currentCenter.x(),
                                currentCenter.y(),
-                               currentCenter.z() - centersDelta);
+                               currentCenter.z() - 0.75 * r * r);
+    }
 
-        //radiusDelta = radiusDelta + 0.01;
-        centersDelta = radiusDelta * radiusDelta * 2;
-
-        radiusCurrent = radiusNext;
-        radiusNext = radiusCurrent - radiusDelta;
-    }*/
 
     m_groups.last()->addObject(FigureBuilder::initDiskSector(bottom, rBottom, 2 * M_PI, 0.1, true));
-
     m_transformObjects.append(m_groups.last());
 }
 
