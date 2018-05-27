@@ -23,7 +23,7 @@ void Widget::initializeGL()
     initShaders();
     initSandGlass();
 
-    m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(0.1)));
+    //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(0.1)));
 
     //m_timer.start(30, this);
 }
@@ -207,7 +207,7 @@ void Widget::initSandGlass()
     QVector3D currentCenter = middle;
     QVector3D nextCenter = QVector3D(currentCenter.x(),
                                      currentCenter.y(),
-                                     currentCenter.z() + 0.9 * radiusCurrent * radiusCurrent);
+                                     currentCenter.z() + 0.5 * radiusCurrent);
 
     for(double r = rMiddle + radiusDelta; r < rBorder1; r += radiusDelta)
     {
@@ -218,8 +218,15 @@ void Widget::initSandGlass()
 
         nextCenter = QVector3D(currentCenter.x(),
                                currentCenter.y(),
-                               currentCenter.z() + 0.9 * r * r);
+                               currentCenter.z() + 0.5 * r);
     }
+
+
+    /*currentCenter = nextCenter;
+    nextCenter = QVector3D(currentCenter.x(),
+                           currentCenter.y(),
+                           currentCenter.z() + 0.9 * rBorder1 * rBorder1);
+    m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, currentCenter, rBorder1, rBorder1));*/
 
     for(double r = radiusCurrent + radiusDelta; r > rTop; r -= radiusDelta)
     {
@@ -239,7 +246,7 @@ void Widget::initSandGlass()
     currentCenter = middle;
     nextCenter = QVector3D(currentCenter.x(),
                            currentCenter.y(),
-                           currentCenter.z() - 0.9 * radiusCurrent * radiusCurrent);
+                           currentCenter.z() - 0.5 * radiusCurrent);
 
     for(double r = rMiddle + radiusDelta; r < rBorder2; r += radiusDelta)
     {
@@ -250,7 +257,7 @@ void Widget::initSandGlass()
 
         nextCenter = QVector3D(currentCenter.x(),
                                currentCenter.y(),
-                               currentCenter.z() - 0.9 * r * r);
+                               currentCenter.z() - 0.5 * r);
     }
 
     for(double r = radiusCurrent + radiusDelta; r > rBottom; r -= radiusDelta)
