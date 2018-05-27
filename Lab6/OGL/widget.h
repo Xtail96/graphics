@@ -40,6 +40,7 @@ protected:
 
     void initShaders();
     void initSandGlass();
+    void initWoodenWheel();
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
