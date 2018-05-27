@@ -228,6 +228,7 @@ void Widget::initSandGlass()
                            currentCenter.z() + 0.9 * rBorder1 * rBorder1);
     m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, currentCenter, rBorder1, rBorder1));*/
 
+    radiusDelta = 0.01;
     for(double r = radiusCurrent + radiusDelta; r > rTop; r -= radiusDelta)
     {
         m_groups.last()->addObject(FigureBuilder::initBelt(nextCenter, currentCenter, r, radiusCurrent));
@@ -237,11 +238,12 @@ void Widget::initSandGlass()
 
         nextCenter = QVector3D(currentCenter.x(),
                                currentCenter.y(),
-                               currentCenter.z() + 0.3 * r * r);
+                               currentCenter.z() + 0.1 * r * r);
     }
     m_groups.last()->addObject(FigureBuilder::initDiskSector(currentCenter, radiusCurrent, 2 * M_PI));
 
 
+    radiusDelta = 0.05;
     radiusCurrent = rMiddle;
     currentCenter = middle;
     nextCenter = QVector3D(currentCenter.x(),
@@ -260,6 +262,7 @@ void Widget::initSandGlass()
                                currentCenter.z() - 0.5 * r);
     }
 
+    radiusDelta = 0.01;
     for(double r = radiusCurrent + radiusDelta; r > rBottom; r -= radiusDelta)
     {
         m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, nextCenter, radiusCurrent, r));
@@ -269,7 +272,7 @@ void Widget::initSandGlass()
 
         nextCenter = QVector3D(currentCenter.x(),
                                currentCenter.y(),
-                               currentCenter.z() - 0.3 * r * r);
+                               currentCenter.z() - 0.1 * r * r);
     }
     m_groups.last()->addObject(FigureBuilder::initDiskSector(currentCenter, radiusCurrent, 2 * M_PI, 0.1, true));
 
