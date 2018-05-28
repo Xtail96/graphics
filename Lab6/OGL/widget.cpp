@@ -18,10 +18,10 @@ void Widget::initializeGL()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     initShaders();
-    initSandGlass2();
+    initSandGlass2(-1.0, 1.0, 0.9, 0.1);
 
     QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
