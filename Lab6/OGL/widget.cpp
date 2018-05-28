@@ -23,7 +23,7 @@ void Widget::initializeGL()
     initShaders();
     initSandGlass();
 
-    QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, 90);
+    QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
     {
         object->rotate(rotation);
@@ -258,11 +258,14 @@ void Widget::initSandGlass()
     }
 
 
-    /*currentCenter = nextCenter;
+    //currentCenter = nextCenter;
     nextCenter = QVector3D(currentCenter.x(),
                            currentCenter.y(),
-                           currentCenter.z() + 0.9 * rBorder1 * rBorder1);
-    m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter, currentCenter, rBorder1, rBorder1));*/
+                           currentCenter.z() + 0.25);
+    m_groups.last()->addObject(FigureBuilder::initBelt(nextCenter,
+                                                       currentCenter,
+                                                       rBorder1,
+                                                       rBorder1));
 
     radiusDelta = 0.01;
     for(double r = radiusCurrent + radiusDelta; r > rTop; r -= radiusDelta)
@@ -297,6 +300,14 @@ void Widget::initSandGlass()
                                currentCenter.y(),
                                currentCenter.z() - 0.5 * r);
     }
+
+    nextCenter = QVector3D(currentCenter.x(),
+                           currentCenter.y(),
+                           currentCenter.z() - 0.25);
+    m_groups.last()->addObject(FigureBuilder::initBelt(currentCenter,
+                                                       nextCenter,
+                                                       rBorder1,
+                                                       rBorder1));
 
     radiusDelta = 0.01;
     for(double r = radiusCurrent + radiusDelta; r > rBottom; r -= radiusDelta)
