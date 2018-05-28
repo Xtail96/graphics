@@ -199,21 +199,21 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
         disk1Normals.push_back(QVector3D(sin(i), cos(i), zNormal));
     }
 
-    /*QList<QVector3D> disk1Tmp = disk1Points;
+    QList<QVector3D> disk1Tmp = disk1Points;
     QList<QVector3D> disk1TmpNormals = disk1Normals;
-    for(int i = 0; i < disk1Tmp.size(); i++)
+    /*for(int i = 0; i < disk1Tmp.size(); i++)
     {
         disk1Points.push_back(QVector3D(disk1Tmp[i].x(), -1 * disk1Tmp[i].y(), disk1Tmp[i].z()));
         disk1Normals.push_back(QVector3D(disk1TmpNormals[i].x(), -1 * disk1TmpNormals[i].y(), disk1TmpNormals[i].z()));
     }*/
 
-    /*for(int i = 0; i < disk1Tmp.size(); i++)
+    for(int i = 0; i < disk1Tmp.size(); i++)
     {
         disk1Points.push_back(QVector3D(-1 * disk1Tmp[i].x(), -1 * disk1Tmp[i].y(), disk1Tmp[i].z()));
         disk1Normals.push_back(QVector3D(-1 * disk1TmpNormals[i].x(), -1 * disk1TmpNormals[i].y(), disk1TmpNormals[i].z()));
     }
 
-    for(int i = 0; i < disk1Tmp.size(); i++)
+    /*for(int i = 0; i < disk1Tmp.size(); i++)
     {
         disk1Points.push_back(QVector3D(-1 * disk1Tmp[i].x(), disk1Tmp[i].y(), disk1Tmp[i].z()));
         disk1Normals.push_back(QVector3D(-1 * disk1TmpNormals[i].x(), disk1TmpNormals[i].y(), disk1TmpNormals[i].z()));
@@ -231,24 +231,23 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
         disk2Points.push_back(QVector3D(disk2Center.position.x() + sin(i) * r2, disk2Center.position.y() + cos(i) * r2, disk2Center.position.z()));
     }
 
-    /*QList<QVector3D> disk2Tmp = disk2Points;
-    QList<QVector3D> disk2TmpNormals = disk1Normals;
+    QList<QVector3D> disk2Tmp = disk2Points;
+    /*for(int i = 0; i < disk2Tmp.size(); i++)
+    {
+        disk2Points.push_back(QVector3D(disk2Tmp[i].x(), disk2Tmp[i].y(), disk2Tmp[i].z()));
+        disk1Normals.push_back(QVector3D(disk1TmpNormals[i].x(), -1 * disk1TmpNormals[i].y(), disk1TmpNormals[i].z()));
+    }*/
+
     for(int i = 0; i < disk2Tmp.size(); i++)
     {
-        disk2Points.push_back(QVector3D(disk2Tmp[i].x(), -1 * disk2Tmp[i].y(), disk2Tmp[i].z()));
-        disk1Normals.push_back(QVector3D(disk2TmpNormals[i].x(), disk2TmpNormals[i].y(), disk2TmpNormals[i].z()));
-    }*/
+        disk2Points.push_back(QVector3D(-1 * disk2Tmp[i].x(), -1 * disk2Tmp[i].y(), disk2Tmp[i].z()));
+        disk1Normals.push_back(QVector3D(-1 * disk1TmpNormals[i].x(), -1 * disk1TmpNormals[i].y(), disk1TmpNormals[i].z()));
+    }
 
     /*for(int i = 0; i < disk2Tmp.size(); i++)
     {
-        disk2Points.push_back(QVector3D(-1 * disk2Tmp[i].x(), -1 * disk2Tmp[i].y(), disk2Tmp[i].z()));
-        disk1Normals.push_back(QVector3D(-1 * disk2TmpNormals[i].x(), -1 * disk2TmpNormals[i].y(), disk2TmpNormals[i].z()));
-    }
-
-    for(int i = 0; i < disk2Tmp.size(); i++)
-    {
         disk2Points.push_back(QVector3D(-1 * disk2Tmp[i].x(), disk2Tmp[i].y(), disk2Tmp[i].z()));
-        disk1Normals.push_back(QVector3D(-1 * disk2TmpNormals[i].x(), disk2TmpNormals[i].y(), disk2TmpNormals[i].z()));
+        disk1Normals.push_back(QVector3D(-1 * disk1TmpNormals[i].x(), disk1TmpNormals[i].y(), disk1TmpNormals[i].z()));
     }*/
 
 
@@ -324,5 +323,5 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
 
 double FigureBuilder::calculteLemniscatePoint(double x, double c)
 {
-    return 0.05f * sqrt(sqrt(pow(c, 4) + 4 * pow(x, 2) * pow(c, 2)) - pow(x, 2) - pow(c, 2));
+    return 0.05f + sqrt(sqrt(pow(c, 4) + 4 * pow(x, 2) * pow(c, 2)) - pow(x, 2) - pow(c, 2));
 }
