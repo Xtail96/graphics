@@ -21,7 +21,7 @@ void Widget::initializeGL()
     glEnable(GL_CULL_FACE);
 
     initShaders();
-    initSandGlass();
+    initSandGlass2();
 
     QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
@@ -322,6 +322,39 @@ void Widget::initSandGlass()
                                currentCenter.z() - 0.1 * r * r);
     }
     m_groups.last()->addObject(FigureBuilder::initDiskSector(currentCenter, radiusCurrent, 2 * M_PI, 0.1, true));
+
+    m_transformObjects.append(m_groups.last());
+}
+
+void Widget::initSandGlass2(double lowerBound, double upperBound, double c, double delta)
+{
+    QList<QVector3D> curvePoints;
+
+    for(double x = lowerBound - delta; x <= upperBound + delta; x += delta)
+    {
+        curvePoints.push_back(QVector3D(FigureBuilder::calculteLemniscatePoint(x, c), 0.0, x));
+    }
+
+    m_groups.push_back(QSharedPointer<Group3D>(new Group3D()));
+
+    for(int i = 0; i < curvePoints.size() - 1; i++)
+    {
+        //double r = curvePoints[i + 1].x() - curvePoints[i].x();
+        double r1 = curvePoints[i].x();
+        double r2 = curvePoints[i + 1].x();
+
+        QVector3D center1 = QVector3D(0.0, 0.0, curvePoints[i].z());
+        QVector3D center2 = QVector3D(0.0, 0.0, curvePoints[i + 1].z());
+        m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r2, r1));
+    }
+
+    double r = curvePoints.first().x();
+    QVector3D center = QVector3D(0.0, 0.0, curvePoints.first().z());
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center, r, 2 * M_PI, 0.1, true));
+
+    r = curvePoints.last().x();
+    center = QVector3D(0.0, 0.0, curvePoints.last().z());
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center, r, 2 * M_PI, 0.1, false));
 
     m_transformObjects.append(m_groups.last());
 }
