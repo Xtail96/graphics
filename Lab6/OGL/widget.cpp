@@ -23,6 +23,12 @@ void Widget::initializeGL()
     initShaders();
     initSandGlass();
 
+    QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, 90);
+    for(auto object : m_transformObjects)
+    {
+        object->rotate(rotation);
+    }
+
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
 
     //m_timer.start(30, this);
@@ -190,6 +196,36 @@ void Widget::initShaders()
     }
 }
 
+void Widget::initWoodenWheel()
+{
+    m_groups.push_back(QSharedPointer<Group3D>(new Group3D()));
+
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(QVector3D(0.0, 0.0, 0.0), 1, 2 * M_PI));
+
+    QVector3D center1 = QVector3D(0.0, 0.0, 0.0);
+    QVector3D center2 = QVector3D(0.0, 0.0, -0.25);
+    double r1 = 1;
+    double r2 = 1.5;
+    double step = 0.1;
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
+
+    center1 = QVector3D(0.0, 0.0, -0.25);
+    center2 = QVector3D(0.0, 0.0, -1.0);
+    r1 = 1.5;
+    r2 = 1.5;
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
+
+    center1 = QVector3D(0.0, 0.0, -1.0);
+    center2 = QVector3D(0.0, 0.0, -1.25);
+    r1 = 1.5;
+    r2 = 1;
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
+
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center2, r2, 2 * M_PI, 0.1, true));
+
+    m_transformObjects.append(m_groups.last());
+}
+
 void Widget::initSandGlass()
 {
     m_groups.push_back(QSharedPointer<Group3D>(new Group3D()));
@@ -275,36 +311,6 @@ void Widget::initSandGlass()
                                currentCenter.z() - 0.1 * r * r);
     }
     m_groups.last()->addObject(FigureBuilder::initDiskSector(currentCenter, radiusCurrent, 2 * M_PI, 0.1, true));
-
-    m_transformObjects.append(m_groups.last());
-}
-
-void Widget::initWoodenWheel()
-{
-    m_groups.push_back(QSharedPointer<Group3D>(new Group3D()));
-
-    m_groups.last()->addObject(FigureBuilder::initDiskSector(QVector3D(0.0, 0.0, 0.0), 1, 2 * M_PI));
-
-    QVector3D center1 = QVector3D(0.0, 0.0, 0.0);
-    QVector3D center2 = QVector3D(0.0, 0.0, -0.25);
-    double r1 = 1;
-    double r2 = 1.5;
-    double step = 0.1;
-    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
-
-    center1 = QVector3D(0.0, 0.0, -0.25);
-    center2 = QVector3D(0.0, 0.0, -1.0);
-    r1 = 1.5;
-    r2 = 1.5;
-    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
-
-    center1 = QVector3D(0.0, 0.0, -1.0);
-    center2 = QVector3D(0.0, 0.0, -1.25);
-    r1 = 1.5;
-    r2 = 1;
-    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r1, r2, step));
-
-    m_groups.last()->addObject(FigureBuilder::initDiskSector(center2, r2, 2 * M_PI, 0.1, true));
 
     m_transformObjects.append(m_groups.last());
 }

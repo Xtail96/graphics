@@ -62,9 +62,6 @@ private:
 
     // для анимации
     QBasicTimer m_timer;
-    float m_angleObject = 0.0f;
-    float m_angleGroup1 = 0.0f;
-    float m_angleGroup2 = 0.0f;
     float m_angleMain = 0.0f;
 
     QSharedPointer<Camera3D> m_camera;
