@@ -29,6 +29,9 @@ void Widget::initializeGL()
         object->rotate(rotation);
     }
 
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
 
     //m_timer.start(30, this);
