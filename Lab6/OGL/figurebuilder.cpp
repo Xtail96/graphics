@@ -281,5 +281,5 @@ SimpleObject3D *FigureBuilder::initBelt(QVector3D center1, QVector3D center2, do
 
 double FigureBuilder::calculteLemniscatePoint(double x, double c)
 {
-    return sqrt(sqrt(pow(c, 4) + 4 * pow(x, 2) * pow(c, 2)) - pow(x, 2) - pow(c, 2));
+    return 0.05f + sqrt(sqrt(pow(c, 4) + 4 * pow(x, 2) * pow(c, 2)) - pow(x, 2) - pow(c, 2));
 }
