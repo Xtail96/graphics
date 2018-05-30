@@ -377,5 +377,24 @@ void Widget::initSandGlass2(double lowerBound, double upperBound, double c, doub
     m_groups.last()->addObject(FigureBuilder::initDiskSector(center1, r, 2 * M_PI, 0.1, true));
     m_groups.last()->addObject(FigureBuilder::initDiskSector(center2, r, 2 * M_PI, 0.1, false));
 
+    double offset = 0.1;
+    r = 0.05;
+    center1 = QVector3D(curvePoints.last().x() + offset, curvePoints.last().x() + offset, curvePoints.last().z());
+    center2 = QVector3D(curvePoints.first().x() + offset, curvePoints.first().x() + offset, curvePoints.first().z());
+    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+
+    center1 = QVector3D(-(curvePoints.last().x() + offset), curvePoints.last().x() + offset, curvePoints.last().z());
+    center2 = QVector3D(-(curvePoints.first().x() + offset), curvePoints.first().x() + offset, curvePoints.first().z());
+    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+
+    center1 = QVector3D(curvePoints.last().x() + offset, -(curvePoints.last().x() + offset), curvePoints.last().z());
+    center2 = QVector3D(curvePoints.first().x() + offset, -(curvePoints.first().x() + offset), curvePoints.first().z());
+    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+
+    center1 = QVector3D(-(curvePoints.last().x() + offset), -(curvePoints.last().x() + offset), curvePoints.last().z());
+    center2 = QVector3D(-(curvePoints.first().x() + offset), -(curvePoints.first().x() + offset), curvePoints.first().z());
+    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+
+
     m_transformObjects.append(m_groups.last());
 }
