@@ -411,7 +411,7 @@ void Widget::initBook(double w, double h, double z, QVector3D offset)
     m_groups.last()->translate(offset);
 
     SimpleObject3D* obj = FigureBuilder::initSquareBelt(QImage(":/123.jpg"),
-                                                        QVector3D(0.0, 0.0, 0.0),
+                                                        QVector3D(0.5, 0.5, 0.0),
                                                         w, h,
                                                         QVector3D(0.0, 0.0, z),
                                                         w, h);

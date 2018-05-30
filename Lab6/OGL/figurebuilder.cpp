@@ -387,6 +387,24 @@ SimpleObject3D *FigureBuilder::initParallelepiped(const QImage &texture, double 
 
 SimpleObject3D *FigureBuilder::initSquareBelt(const QImage &texture, QVector3D center1, double w1, double h1, QVector3D center2, double w2, double h2)
 {
+    double zNormal;
+    double delta = qMax(w2 - w1, h2 - h1);
+    if(delta > 0)
+    {
+        zNormal = 1.0;
+    }
+    else
+    {
+        if(delta < 0)
+        {
+            zNormal = -1.0;
+        }
+        else
+        {
+            zNormal = 0.0;
+        }
+    }
+
     double square1WidthDiv2 = w1 / 2.0f;
     double square1HeightDiv2 = h1 / 2.0f;
 
@@ -403,15 +421,15 @@ SimpleObject3D *FigureBuilder::initSquareBelt(const QImage &texture, QVector3D c
     // 0
     vertexes1.push_back(VertexData(QVector3D(center1.x() + square1WidthDiv2, center1.y() + square1HeightDiv2, center1.z()),
                                   QVector2D(0.0, 1.0),
-                                  QVector3D(0.0, 1.0, 0.0)));
+                                  QVector3D(0.0, 1.0, zNormal)));
 
     // 1
     vertexes1.push_back(VertexData(QVector3D(-(center1.x() + square1WidthDiv2), center1.y() + square1HeightDiv2, center1.z()),
                                   QVector2D(1.0, 1.0),
-                                  QVector3D(0.0, 1.0, 0.0)));
+                                  QVector3D(0.0, 1.0, zNormal)));
     vertexes1.push_back(VertexData(QVector3D(-(center1.x() + square1WidthDiv2), center1.y() + square1HeightDiv2, center1.z()),
                                   QVector2D(0.0, 1.0),
-                                  QVector3D(-1.0, 0.0, 0.0)));
+                                  QVector3D(-1.0, 0.0, zNormal)));
 
     // 2
     vertexes1.push_back(VertexData(QVector3D(-(center1.x() + square1WidthDiv2), -(center1.y() + square1HeightDiv2), center1.z()),
@@ -419,7 +437,7 @@ SimpleObject3D *FigureBuilder::initSquareBelt(const QImage &texture, QVector3D c
                                   QVector3D(-1.0, 0.0, 0.0)));
     vertexes1.push_back(VertexData(QVector3D(-(center1.x() + square1WidthDiv2), -(center1.y() + square1HeightDiv2), center1.z()),
                                   QVector2D(0.0, 1.0),
-                                  QVector3D(0.0, -1.0, 0.0)));
+                                  QVector3D(0.0, -1.0, zNormal)));
 
     // 3
     vertexes1.push_back(VertexData(QVector3D(center1.x() + square1WidthDiv2, -(center1.y() + square1HeightDiv2), center1.z()),
@@ -427,47 +445,47 @@ SimpleObject3D *FigureBuilder::initSquareBelt(const QImage &texture, QVector3D c
                                   QVector3D(0.0, -1.0, 0.0)));
     vertexes1.push_back(VertexData(QVector3D(center1.x() + square1WidthDiv2, -(center1.y() + square1HeightDiv2), center1.z()),
                                   QVector2D(0.0, 1.0),
-                                  QVector3D(1.0, 0.0, 0.0)));
+                                  QVector3D(1.0, 0.0, zNormal)));
 
     // 0
     vertexes1.push_back(VertexData(QVector3D(center1.x() + square1WidthDiv2, center1.y() + square1HeightDiv2, center1.z()),
                                   QVector2D(1.0, 1.0),
-                                  QVector3D(1.0, 0.0, 0.0)));
+                                  QVector3D(1.0, 0.0, zNormal)));
 
     // вершины 2 квадрата
     // 0
     vertexes2.push_back(VertexData(QVector3D(center2.x() + square2WidthDiv2, center2.y() + square2HeightDiv2, center2.z()),
                                   QVector2D(0.0, 0.0),
-                                  QVector3D(0.0, 1.0, 0.0)));
+                                  QVector3D(0.0, 1.0, zNormal)));
 
     // 1
     vertexes2.push_back(VertexData(QVector3D(-(center2.x() + square2WidthDiv2), center2.y() + square2HeightDiv2, center2.z()),
                                   QVector2D(1.0, 0.0),
-                                  QVector3D(0.0, 1.0, 0.0)));
+                                  QVector3D(0.0, 1.0, zNormal)));
     vertexes2.push_back(VertexData(QVector3D(-(center2.x() + square2WidthDiv2), center2.y() + square2HeightDiv2, center2.z()),
                                   QVector2D(0.0, 0.0),
-                                  QVector3D(-1.0, 0.0, 0.0)));
+                                  QVector3D(-1.0, 0.0, zNormal)));
 
     // 2
     vertexes2.push_back(VertexData(QVector3D(-(center2.x() + square2WidthDiv2), -(center2.y() + square2HeightDiv2), center2.z()),
                                   QVector2D(1.0, 0.0),
-                                  QVector3D(-1.0, 0.0, 0.0)));
+                                  QVector3D(-1.0, 0.0, zNormal)));
     vertexes2.push_back(VertexData(QVector3D(-(center2.x() + square2WidthDiv2), -(center2.y() + square2HeightDiv2), center2.z()),
                                   QVector2D(0.0, 0.0),
-                                  QVector3D(0.0, -1.0, 0.0)));
+                                  QVector3D(0.0, -1.0, zNormal)));
 
     // 3
     vertexes2.push_back(VertexData(QVector3D(center2.x() + square2WidthDiv2, -(center2.y() + square2HeightDiv2), center2.z()),
                                   QVector2D(1.0, 0.0),
-                                  QVector3D(0.0, -1.0, 0.0)));
+                                  QVector3D(0.0, -1.0, zNormal)));
     vertexes2.push_back(VertexData(QVector3D(center2.x() + square2WidthDiv2, -(center2.y() + square2HeightDiv2), center2.z()),
                                   QVector2D(0.0, 0.0),
-                                  QVector3D(1.0, 0.0, 0.0)));
+                                  QVector3D(1.0, 0.0, zNormal)));
 
     // 0
     vertexes2.push_back(VertexData(QVector3D(center2.x() + square2WidthDiv2, center2.y() + square2HeightDiv2, center2.z()),
                                   QVector2D(1.0, 0.0),
-                                  QVector3D(1.0, 0.0, 0.0)));
+                                  QVector3D(1.0, 0.0, zNormal)));
 
     vertexes += vertexes1;
     vertexes += vertexes2;
