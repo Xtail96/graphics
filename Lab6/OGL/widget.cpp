@@ -21,8 +21,8 @@ void Widget::initializeGL()
     //glEnable(GL_CULL_FACE);
 
     initShaders();
-    initSandGlass2(-1.0, 1.0, 0.9, 0.1);
-    initBook(1.0, 1.0, 0.5, QVector3D(0.0, 0.0, -2.0));
+    //initSandGlass2(-1.0, 1.0, 0.9, 0.1);
+    initBook(QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, -0.5), 1, 1, 0.1);
 
 
     /*QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
@@ -405,17 +405,75 @@ void Widget::initSandGlass2(double lowerBound, double upperBound, double c, doub
     m_transformObjects.append(m_groups.last());
 }
 
-void Widget::initBook(double w, double h, double z, QVector3D offset)
+void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta)
 {
     m_groups.push_back(QSharedPointer<Group3D>(new Group3D));
-    m_groups.last()->translate(offset);
 
-    SimpleObject3D* obj = FigureBuilder::initSquareBelt(QImage(":/123.jpg"),
+    double offset = std::fabs(std::fabs(centerTop.z()) - std::fabs(centerBottom.z()));
+
+    QVector3D centerMiddle = QVector3D(centerTop.x() - centerBottom.x(), centerTop.y() - centerBottom.y(), centerBottom.z() + offset / 2);
+    QVector3D center1 = QVector3D(0.0 + delta, 0.0, centerBottom.z() + delta);
+    QVector3D center2 = QVector3D(0.0 + delta, 0.0, centerBottom.z());
+
+    qDebug() << centerBottom.z() << centerMiddle.z() << centerTop.z() << offset;
+
+    for(double z = centerBottom.z() + delta; z <= centerMiddle.z(); z += delta)
+    {
+        //qDebug() << z;
+        m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
+                                                                 center1,
+                                                                 sideX, sideY,
+                                                                 center2,
+                                                                 sideX, sideY));
+
+        center1 = QVector3D(center2.x() + delta, center2.y(), z);
+        center2 = QVector3D(center2.x() + delta, center2.y(), z + delta);
+    }
+
+    //qDebug() << center2.z() << centerTop.z() << centerMiddle.z() << delta;
+
+    //center1 = center2;
+    //center2 = QVector3D(center2.x(), center2.y(), center2.z() + delta);
+
+    for(double z = center2.z(); z <= centerTop.z(); z += delta)
+    {
+        //qDebug() << z;
+        m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
+                                                                 center1,
+                                                                 sideX, sideY,
+                                                                 center2,
+                                                                 sideX, sideY));
+
+        center1 = QVector3D(center2.x() - delta, center2.y(), z);
+        center2 = QVector3D(center2.x() - delta, center2.y(), z + delta);
+    }
+
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerTop, sideX, sideY, 0.1));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerBottom, sideX, sideY, 0.1));
+
+    /*double delta = 0.01;
+    QVector3D center1 = QVector3D(0.0, 0.0, -z);
+    QVector3D center2 = QVector3D(0.0, 0.0, -z);
+
+    for(double zCoord = -z - step; zCoord <= 0 + step; zCoord += step)
+    {
+        m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
+                                                                 center1,
+                                                                 w, h,
+                                                                 center2,
+                                                                 w, h));
+
+        center1 = QVector3D(center2.x() + delta, center2.y(), zCoord);
+        center2 = QVector3D(center2.x() + delta, center2.y(), zCoord + step);
+    }*/
+
+
+    /*SimpleObject3D* obj = FigureBuilder::initSquareBelt(QImage(":/123.jpg"),
                                                         QVector3D(0.5, 0.5, 0.0),
                                                         w, h,
                                                         QVector3D(0.0, 0.0, z),
                                                         w, h);
-    m_groups.last()->addObject(obj);
+    m_groups.last()->addObject(obj);*/
 
     //SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":/123.jpg"), w, h, z);
     //m_groups.last()->addObject(obj);
