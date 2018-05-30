@@ -24,11 +24,14 @@ void Widget::initializeGL()
     initSandGlass2(-1.0, 1.0, 0.9, 0.1);
     initBook(1.0, 1.0, 0.5, QVector3D(0.0, 0.0, -2.0));
 
-    QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
+
+    /*QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
     {
         object->rotate(rotation);
-    }
+    }*/
+
+
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
@@ -405,10 +408,11 @@ void Widget::initSandGlass2(double lowerBound, double upperBound, double c, doub
 void Widget::initBook(double w, double h, double z, QVector3D offset)
 {
     m_groups.push_back(QSharedPointer<Group3D>(new Group3D));
+    m_groups.last()->translate(offset);
+
 
     SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":/123.jpg"), w, h, z);
-    obj->translate(offset);
-
     m_groups.last()->addObject(obj);
+
     m_transformObjects.append(m_groups.last());
 }
