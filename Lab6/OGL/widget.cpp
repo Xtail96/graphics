@@ -331,6 +331,7 @@ void Widget::initSandGlass()
 
 void Widget::initSandGlass2(double lowerBound, double upperBound, double c, double delta)
 {
+    // рисуем силуэт часов
     QList<QVector3D> curvePoints;
 
     for(double x = lowerBound - delta; x <= upperBound + delta; x += delta)
@@ -351,13 +352,30 @@ void Widget::initSandGlass2(double lowerBound, double upperBound, double c, doub
         m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r2, r1));
     }
 
+    // рисуем верх и низ часов
     double r = curvePoints.first().x();
-    QVector3D center = QVector3D(0.0, 0.0, curvePoints.first().z());
-    m_groups.last()->addObject(FigureBuilder::initDiskSector(center, r, 2 * M_PI, 0.1, true));
-
+    QVector3D center1 = QVector3D(0.0, 0.0, curvePoints.first().z());
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center1, r, 2 * M_PI, 0.1, true));
     r = curvePoints.last().x();
-    center = QVector3D(0.0, 0.0, curvePoints.last().z());
-    m_groups.last()->addObject(FigureBuilder::initDiskSector(center, r, 2 * M_PI, 0.1, false));
+    center1 = QVector3D(0.0, 0.0, curvePoints.last().z());
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center1, r, 2 * M_PI, 0.1, false));
+
+    // рисуем каркас вокруг часов
+    r = curvePoints.first().x() * 2;
+    center1 = QVector3D(0.0, 0.0, curvePoints.first().z());
+    QVector3D center2 = center1;
+    center2.setZ(center1.z() - 0.25);
+    m_groups.last()->addObject(FigureBuilder::initBelt(center1, center2, r, r, 0.1));
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center1, r, 2 * M_PI, 0.1, false));
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center2, r, 2 * M_PI, 0.1, true));
+
+    r = curvePoints.last().x() * 2;
+    center1 = QVector3D(0.0, 0.0, curvePoints.last().z());
+    center2 = center1;
+    center2.setZ(center1.z() + 0.25);
+    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center1, r, 2 * M_PI, 0.1, true));
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(center2, r, 2 * M_PI, 0.1, false));
 
     m_transformObjects.append(m_groups.last());
 }
