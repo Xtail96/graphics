@@ -410,9 +410,15 @@ void Widget::initBook(double w, double h, double z, QVector3D offset)
     m_groups.push_back(QSharedPointer<Group3D>(new Group3D));
     m_groups.last()->translate(offset);
 
-
-    SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":/123.jpg"), w, h, z);
+    SimpleObject3D* obj = FigureBuilder::initSquareBelt(QImage(":/123.jpg"),
+                                                        QVector3D(0.0, 0.0, 0.0),
+                                                        w, h,
+                                                        QVector3D(0.0, 0.0, z),
+                                                        w, h);
     m_groups.last()->addObject(obj);
+
+    //SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":/123.jpg"), w, h, z);
+    //m_groups.last()->addObject(obj);
 
     m_transformObjects.append(m_groups.last());
 }
