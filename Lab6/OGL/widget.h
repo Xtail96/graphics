@@ -46,6 +46,7 @@ protected:
     void initSandGlass2(double lowerBound = -1.0, double upperBound = 1.0, double c = 1.0, double delta = 0.1);
     void initBook(QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta = 0.1);
     void initSimpleBook(QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta = 0.1);
+    void initStairs(QVector3D centerTop, QVector3D centerBottom, double width, double delta = 0.1);
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;

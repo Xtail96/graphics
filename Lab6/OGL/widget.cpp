@@ -51,6 +51,8 @@ void Widget::initializeGL()
         bottomBorder = bottomBorder - (1 - randomZ(random));
     }
 
+    initStairs(QVector3D(0.0, -2.0, 0.0), QVector3D(0.0, -5.0, -10.0), 1);
+
     QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
     {
@@ -503,5 +505,42 @@ void Widget::initSimpleBook(QVector3D centerTop, QVector3D centerBottom, double 
                                                                  sideY,
                                                                  offset));
     m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerBottom, sideX, sideY, delta));
+    m_transformObjects.append(m_groups.last());
+}
+
+void Widget::initStairs(QVector3D centerTop, QVector3D centerBottom, double width, double delta)
+{
+    double side = 0.25;
+    m_groups.push_back(QSharedPointer<Group3D>(new Group3D));
+
+    QVector3D topLeftCenter = QVector3D(centerTop.x() - width / 2,
+                                        centerTop.y(),
+                                        centerTop.z());
+    QVector3D topRightCenter = QVector3D(centerTop.x() + width / 2,
+                                         centerTop.y(),
+                                         centerTop.z());
+
+    QVector3D bottomLeftCenter = QVector3D(centerBottom.x() - width / 2,
+                                           centerBottom.y(),
+                                           centerBottom.z());
+    QVector3D bottomRightCenter = QVector3D(centerBottom.x() + width / 2,
+                                            centerBottom.y(),
+                                            centerBottom.z());
+
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), topLeftCenter, side, side, 0.05));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), topRightCenter, side, side, 0.05));
+
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), bottomLeftCenter, side, side, 0.05));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), bottomRightCenter, side, side, 0.05));
+
+
+    m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":123.jpg"),
+                                                             topLeftCenter, side, side,
+                                                             bottomLeftCenter, side, side));
+
+    m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":123.jpg"),
+                                                             topRightCenter, side, side,
+                                                             bottomRightCenter, side, side));
+
     m_transformObjects.append(m_groups.last());
 }
