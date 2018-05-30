@@ -14,6 +14,7 @@ public:
     static double calculteLemniscatePoint(double x, double c);
     static SimpleObject3D *initParallelepiped(const QImage &texture, QVector3D centerTop, double width, double height, double z);
     static SimpleObject3D *initSquareBelt(const QImage &texture, QVector3D center1, double w1, double h1, QVector3D center2, double w2, double h2);
+    static SimpleObject3D *initStair(const QImage &texture, QVector3D center, double w, double r);
 };
 
 #endif // FIGUREBUILDER_H

@@ -507,3 +507,8 @@ SimpleObject3D *FigureBuilder::initSquareBelt(const QImage &texture, QVector3D c
 
     return new SimpleObject3D(vertexes, indexes, texture);
 }
+
+SimpleObject3D *FigureBuilder::initStair(const QImage &texture, QVector3D center, double w, double r)
+{
+
+}
