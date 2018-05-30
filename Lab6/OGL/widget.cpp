@@ -421,19 +421,16 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
         center = QVector3D(center.x() + delta / 2.5, center.y(), z);
         m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":paper1.jpg"),
                                                                      center,
-                                                                     sideX - delta * 2, sideY - delta * 10, delta));
+                                                                     sideX - delta * 10, sideY - delta * 10, delta));
+        // часть корешка книги
+        QVector3D rootCenter = QVector3D((center.x() + (sideX - delta * 10) / 2 + delta / 2),
+                                         (center.y()),
+                                         (center.z()));
+        m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"),
+                                                                     rootCenter,
+                                                                     delta, sideY, delta * 10));
 
-        /*m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
-                                                                 center1,
-                                                                 sideX, sideY,
-                                                                 center2,
-                                                                 sideX, sideY));*/
     }
-
-    //qDebug() << center2.z() << centerTop.z() << centerMiddle.z() << delta;
-
-    //center1 = center2;
-    //center2 = QVector3D(center2.x(), center2.y(), center2.z() + delta);
 
     center.setZ(center.z() + delta);
 
@@ -441,45 +438,19 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
     {
         m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":paper1.jpg"),
                                                                      center,
-                                                                     sideX - delta * 2, sideY - delta * 10, delta));
-        center = QVector3D(center.x() - delta / 2.5, center.y(), z);
+                                                                     sideX - delta * 10, sideY - delta * 10, delta));
 
-        /*m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
-                                                                 center1,
-                                                                 sideX, sideY,
-                                                                 center2,
-                                                                 sideX, sideY));*/
+        // часть корешка книги
+        QVector3D rootCenter = QVector3D((center.x() + (sideX - delta * 10) / 2 + delta / 2),
+                                         (center.y()),
+                                         (center.z()));
+        m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"),
+                                                                     rootCenter,
+                                                                     delta, sideY, delta * 10));
+        center = QVector3D(center.x() - delta / 2.5, center.y(), z);
     }
 
     m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerTop, sideX, sideY, 0.1));
     m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerBottom, sideX, sideY, 0.1));
-
-    /*double delta = 0.01;
-    QVector3D center1 = QVector3D(0.0, 0.0, -z);
-    QVector3D center2 = QVector3D(0.0, 0.0, -z);
-
-    for(double zCoord = -z - step; zCoord <= 0 + step; zCoord += step)
-    {
-        m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
-                                                                 center1,
-                                                                 w, h,
-                                                                 center2,
-                                                                 w, h));
-
-        center1 = QVector3D(center2.x() + delta, center2.y(), zCoord);
-        center2 = QVector3D(center2.x() + delta, center2.y(), zCoord + step);
-    }*/
-
-
-    /*SimpleObject3D* obj = FigureBuilder::initSquareBelt(QImage(":/123.jpg"),
-                                                        QVector3D(0.5, 0.5, 0.0),
-                                                        w, h,
-                                                        QVector3D(0.0, 0.0, z),
-                                                        w, h);
-    m_groups.last()->addObject(obj);*/
-
-    //SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":/123.jpg"), w, h, z);
-    //m_groups.last()->addObject(obj);
-
     m_transformObjects.append(m_groups.last());
 }
