@@ -382,7 +382,10 @@ SimpleObject3D *FigureBuilder::initParallelepiped(const QImage &texture, QVector
         indexes.append(i + 3);
     }
 
-    return new SimpleObject3D(vertexes, indexes, texture);
+    SimpleObject3D* obj = new SimpleObject3D(vertexes, indexes, texture);
+    obj->translate(QVector3D(0.0, 0.0, -deep_div_2));
+
+    return obj;
 }
 
 SimpleObject3D *FigureBuilder::initSquareBelt(const QImage &texture, QVector3D center1, double w1, double h1, QVector3D center2, double w2, double h2)

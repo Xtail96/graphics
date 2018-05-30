@@ -20,16 +20,42 @@ void Widget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
 
+    double precision = 0.1;
+
+    std::random_device rd;
+    std::mt19937 random(rd());
+    std::uniform_real_distribution<double> randomZ(0, 0.7);
+
     initShaders();
-    initSandGlass2(-1.0, 1.0, 0.9, 0.1);
-    initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
+    initSandGlass2(-1.0, 1.0, 0.9, precision);
+    //initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
+    initSimpleBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, precision);
 
 
-    /*QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
+    double topBorder = -2.0 - precision;
+    double bottomBorder = -3.0;
+    for(int i = 0; i < 14; i++)
+    {
+        initSimpleBook(QVector3D(0.0, 0.0, topBorder), QVector3D(0.0, 0.0, bottomBorder), 3, 4, precision);
+
+        if(i % 2 != 0)
+        {
+            m_groups.last()->rotate(QQuaternion::fromAxisAndAngle(0.0, 0.0, 1.0, -10 - i * 10));
+        }
+        else
+        {
+            m_groups.last()->rotate(QQuaternion::fromAxisAndAngle(0.0, 0.0, 1.0, 10 + i * 10));
+        }
+
+        topBorder = bottomBorder - precision;
+        bottomBorder = bottomBorder - (1 - randomZ(random));
+    }
+
+    QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
     {
         object->rotate(rotation);
-    }*/
+    }
 
 
 
@@ -450,5 +476,32 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
 
     m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerTop, sideX, sideY, 0.1));
     m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerBottom, sideX, sideY, 0.1));
+    m_transformObjects.append(m_groups.last());
+}
+
+void Widget::initSimpleBook(QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta)
+{
+    m_groups.push_back(QSharedPointer<Group3D>(new Group3D));
+    double offset = std::fabs(std::fabs(centerTop.z()) - std::fabs(centerBottom.z())) - delta;
+
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerTop, sideX, sideY, delta));
+
+    //qDebug() << offset << centerTop.z() - delta;
+
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":paper1.jpg"),
+                                                                 QVector3D(centerTop.x(),
+                                                                           centerTop.y(),
+                                                                           centerTop.z() - delta),
+                                                                 sideX - delta * 2,
+                                                                 sideY - delta * 2,
+                                                                 offset));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"),
+                                                                 QVector3D(centerTop.x() + sideX / 2 - delta / 2,
+                                                                           centerTop.y(),
+                                                                           centerTop.z() - delta),
+                                                                 delta,
+                                                                 sideY,
+                                                                 offset));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerBottom, sideX, sideY, delta));
     m_transformObjects.append(m_groups.last());
 }
