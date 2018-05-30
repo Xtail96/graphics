@@ -30,13 +30,12 @@ void Widget::initializeGL()
     QImage texture = QImage(":123.jpg");
 
     initShaders();
-    initBarrel(-0.5, precision);
 
-    //initSandGlass2(-1.0, 1.0, 0.9, precision);
-    //initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
-    //initSimpleBook(texture, QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, precision);
+    initSandGlass2(-1.0, 1.0, 0.9, precision);
+    initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
+    initSimpleBook(texture, QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, precision);
 
-    /*double topBorder = -2.0 - precision;
+    double topBorder = -2.0 - precision;
     double bottomBorder = -3.0;
 
     for(int i = 0; i < 14; i++)
@@ -91,22 +90,22 @@ void Widget::initializeGL()
 
         topBorder = bottomBorder - precision;
         bottomBorder = bottomBorder - (1 - randomZ(random));
-    }*/
+    }
 
-    //initStairs(QVector3D(0.0, -2.0, 0.0), QVector3D(0.0, -5.0, -10.0), 1, 1);
-    //initStairs(QVector3D(0.0, -1.75, -1.0), 1, -topBorder, 0.15, 1, -15);
+    initStairs(QVector3D(0.0, -1.75, -1.0), 1, -topBorder, 0.15, 1, -15);
 
     QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
     {
         object->rotate(rotation);
-        //object->scale(0.125);
+        object->scale(0.125);
     }
 
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
 
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(QImage(":123.jpg"), 2)));
+    //initBarrel(-0.5, precision);
 
     //m_timer.start(30, this);
 }
