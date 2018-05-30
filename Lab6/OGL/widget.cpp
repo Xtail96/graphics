@@ -21,8 +21,8 @@ void Widget::initializeGL()
     //glEnable(GL_CULL_FACE);
 
     initShaders();
-    //initSandGlass2(-1.0, 1.0, 0.9, 0.1);
-    initBook(QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, -0.5), 1.5, 2, 0.01);
+    initSandGlass2(-1.0, 1.0, 0.9, 0.1);
+    initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
 
 
     /*QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
@@ -414,8 +414,6 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
     QVector3D centerMiddle = QVector3D(centerTop.x() - centerBottom.x(), centerTop.y() - centerBottom.y(), centerBottom.z() + offset / 2);
     QVector3D center = QVector3D(0.0, 0.0, centerBottom.z());
 
-    qDebug() << centerBottom.z() << centerMiddle.z() << centerTop.z() << offset;
-
     for(double z = centerBottom.z() + delta; z <= centerMiddle.z(); z += delta)
     {
         center = QVector3D(center.x() + delta / 2.5, center.y(), z);
@@ -428,7 +426,7 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
                                          (center.z()));
         m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"),
                                                                      rootCenter,
-                                                                     delta, sideY, delta * 10));
+                                                                     delta * 5, sideY, delta));
 
     }
 
@@ -446,7 +444,7 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
                                          (center.z()));
         m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"),
                                                                      rootCenter,
-                                                                     delta, sideY, delta * 10));
+                                                                     delta * 5, sideY, delta));
         center = QVector3D(center.x() - delta / 2.5, center.y(), z);
     }
 
