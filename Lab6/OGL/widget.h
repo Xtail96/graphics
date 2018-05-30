@@ -42,6 +42,7 @@ protected:
     void initSandGlass();
     void initWoodenWheel();
     void initSandGlass2(double lowerBound = -1.0, double upperBound = 1.0, double c = 1.0, double delta = 0.1);
+    void initBook(double w = 1.0, double h = 1.0, double z = 0.5, QVector3D offset = QVector3D(0.0, 0.0, 0.0));
 private:
     // матрица проекции
     QMatrix4x4 m_projectionMatrix;
