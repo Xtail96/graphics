@@ -52,13 +52,17 @@ void Widget::initializeGL()
     }
 
     //initStairs(QVector3D(0.0, -2.0, 0.0), QVector3D(0.0, -5.0, -10.0), 1, 1);
-    initStairs(QVector3D(0.0, -1.75, -1.0), 1, -bottomBorder, 0.15, 1, -15);
+    initStairs(QVector3D(0.0, -1.75, -1.0), 1, -topBorder, 0.15, 1, -15);
 
-    /*QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
+    QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
     for(auto object : m_transformObjects)
     {
         object->rotate(rotation);
-    }*/
+        object->scale(0.125);
+    }
+
+
+
 
 
 
