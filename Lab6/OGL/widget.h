@@ -48,7 +48,7 @@ protected:
     void initSimpleBook(const QImage &texture, QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta = 0.1);
     void initStairs(QVector3D centerTop, QVector3D centerBottom, double width, double delta = 0.1);
     void initStairs(QVector3D centerTop, double width, double height, double side, double delta, double angle);
-    void initBarrel(double lowerBound, double upperBound, double delta);
+    void initBarrel(double leftOffset, double delta);
 
 private:
     // матрица проекции

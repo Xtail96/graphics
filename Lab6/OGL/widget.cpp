@@ -30,7 +30,7 @@ void Widget::initializeGL()
     QImage texture = QImage(":123.jpg");
 
     initShaders();
-    initBarrel(-0.5, 2.0, 0.1);
+    initBarrel(-0.5, precision);
 
     //initSandGlass2(-1.0, 1.0, 0.9, precision);
     //initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
@@ -719,13 +719,13 @@ void Widget::initStairs(QVector3D centerTop, double width, double height, double
     m_transformObjects.append(m_groups.last());
 }
 
-void Widget::initBarrel(double lowerBound, double upperBound, double delta)
+void Widget::initBarrel(double leftOffset, double delta)
 {
     QList<QVector3D> curvePoints;
 
-    for(double x = lowerBound / 2; x < 0.0; x += delta)
+    for(double x = leftOffset / 2; x < 0.0; x += delta)
     {
-        curvePoints.push_back(QVector3D(x + fabs(lowerBound * 2), 0.0, 2 * sqrt(-x)));
+        curvePoints.push_back(QVector3D(x + fabs(leftOffset * 2), 0.0, 2 * sqrt(-x)));
     }
 
     QList<QVector3D> invertedPoints;
