@@ -30,8 +30,8 @@ void Widget::initializeGL()
         object->rotate(rotation);
     }
 
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
 
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
 
@@ -352,16 +352,16 @@ void Widget::initSandGlass2(double lowerBound, double upperBound, double c, doub
 
         QVector3D center1 = QVector3D(0.0, 0.0, curvePoints[i].z());
         QVector3D center2 = QVector3D(0.0, 0.0, curvePoints[i + 1].z());
-        m_groups.last()->addObject(FigureBuilder::initBelt(QImage(":/123.jpg"), center2, center1, r2, r1));
+        m_groups.last()->addObject(FigureBuilder::initBelt(QImage(":/paper1.jpg"), center2, center1, r2, r1));
     }
 
     // рисуем верх и низ часов
     double r = curvePoints.first().x();
     QVector3D center1 = QVector3D(0.0, 0.0, curvePoints.first().z());
-    m_groups.last()->addObject(FigureBuilder::initDiskSector(QImage(":/123.jpg"), center1, r, 2 * M_PI, 0.1, true));
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(QImage(":/paper1.jpg"), center1, r, 2 * M_PI, 0.1, true));
     r = curvePoints.last().x();
     center1 = QVector3D(0.0, 0.0, curvePoints.last().z());
-    m_groups.last()->addObject(FigureBuilder::initDiskSector(QImage(":/123.jpg"), center1, r, 2 * M_PI, 0.1, false));
+    m_groups.last()->addObject(FigureBuilder::initDiskSector(QImage(":/paper1.jpg"), center1, r, 2 * M_PI, 0.1, false));
 
     // рисуем каркас вокруг часов
     r = curvePoints.first().x() * 2;
