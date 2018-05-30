@@ -25,7 +25,7 @@ void Widget::initializeGL()
     std::random_device rd;
     std::mt19937 random(rd());
     std::uniform_real_distribution<double> randomZ(0, 0.7);
-    std::uniform_int_distribution<double> randomTextureIndex(0, 2);
+    std::uniform_int_distribution<double> randomTextureIndex(0, 9);
 
     QImage texture = QImage(":123.jpg");
 
@@ -45,10 +45,31 @@ void Widget::initializeGL()
             texture = QImage(":123.jpg");
             break;
         case 1:
-            texture = QImage(":glass2.jpg");
+            texture = QImage(":1.jpg");
             break;
         case 2:
-            texture = QImage(":paper2.jpg");
+            texture = QImage(":2.jpg");
+            break;
+        case 3:
+            texture = QImage(":7.jpg");
+            break;
+        case 4:
+            texture = QImage(":4.jpg");
+            break;
+        case 5:
+            texture = QImage(":5.jpg");
+            break;
+        case 6:
+            texture = QImage(":6.jpg");
+            break;
+        case 7:
+            texture = QImage(":3.jpg");
+            break;
+        case 8:
+            texture = QImage(":8.jpg");
+            break;
+        case 9:
+            texture = QImage(":9.jpg");
             break;
         default:
             texture = QImage(":123.jpg");
