@@ -22,7 +22,7 @@ void Widget::initializeGL()
 
     initShaders();
     //initSandGlass2(-1.0, 1.0, 0.9, 0.1);
-    initBook(QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, -0.5), 1, 1, 0.1);
+    initBook(QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, -0.5), 1.5, 2, 0.01);
 
 
     /*QQuaternion rotation = QQuaternion::fromAxisAndAngle(1.0, 0.0, 0.0, -90);
@@ -33,8 +33,8 @@ void Widget::initializeGL()
 
 
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
 
     //m_transformObjects.append(QSharedPointer<Transformational>(FigureBuilder::initCube(2)));
 
@@ -412,22 +412,22 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
     double offset = std::fabs(std::fabs(centerTop.z()) - std::fabs(centerBottom.z()));
 
     QVector3D centerMiddle = QVector3D(centerTop.x() - centerBottom.x(), centerTop.y() - centerBottom.y(), centerBottom.z() + offset / 2);
-    QVector3D center1 = QVector3D(0.0 + delta, 0.0, centerBottom.z() + delta);
-    QVector3D center2 = QVector3D(0.0 + delta, 0.0, centerBottom.z());
+    QVector3D center = QVector3D(0.0, 0.0, centerBottom.z());
 
     qDebug() << centerBottom.z() << centerMiddle.z() << centerTop.z() << offset;
 
     for(double z = centerBottom.z() + delta; z <= centerMiddle.z(); z += delta)
     {
-        //qDebug() << z;
-        m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
+        center = QVector3D(center.x() + delta / 2.5, center.y(), z);
+        m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":paper1.jpg"),
+                                                                     center,
+                                                                     sideX - delta * 2, sideY - delta * 10, delta));
+
+        /*m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
                                                                  center1,
                                                                  sideX, sideY,
                                                                  center2,
-                                                                 sideX, sideY));
-
-        center1 = QVector3D(center2.x() + delta, center2.y(), z);
-        center2 = QVector3D(center2.x() + delta, center2.y(), z + delta);
+                                                                 sideX, sideY));*/
     }
 
     //qDebug() << center2.z() << centerTop.z() << centerMiddle.z() << delta;
@@ -435,17 +435,20 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
     //center1 = center2;
     //center2 = QVector3D(center2.x(), center2.y(), center2.z() + delta);
 
-    for(double z = center2.z(); z <= centerTop.z(); z += delta)
+    center.setZ(center.z() + delta);
+
+    for(double z = center.z() + delta; z < centerTop.z(); z += delta)
     {
-        //qDebug() << z;
-        m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
+        m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":paper1.jpg"),
+                                                                     center,
+                                                                     sideX - delta * 2, sideY - delta * 10, delta));
+        center = QVector3D(center.x() - delta / 2.5, center.y(), z);
+
+        /*m_groups.last()->addObject(FigureBuilder::initSquareBelt(QImage(":paper1.jpg"),
                                                                  center1,
                                                                  sideX, sideY,
                                                                  center2,
-                                                                 sideX, sideY));
-
-        center1 = QVector3D(center2.x() - delta, center2.y(), z);
-        center2 = QVector3D(center2.x() - delta, center2.y(), z + delta);
+                                                                 sideX, sideY));*/
     }
 
     m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerTop, sideX, sideY, 0.1));
