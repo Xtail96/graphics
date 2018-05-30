@@ -381,20 +381,20 @@ void Widget::initSandGlass2(double lowerBound, double upperBound, double c, doub
     r = 0.05;
     center1 = QVector3D(curvePoints.last().x() + offset, curvePoints.last().x() + offset, curvePoints.last().z());
     center2 = QVector3D(curvePoints.first().x() + offset, curvePoints.first().x() + offset, curvePoints.first().z());
-    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+    SimpleObject3D* obj = FigureBuilder::initBelt(center2, center1, r, r, 0.1);
+    m_groups.last()->addObject(obj);
 
-    center1 = QVector3D(-(curvePoints.last().x() + offset), curvePoints.last().x() + offset, curvePoints.last().z());
-    center2 = QVector3D(-(curvePoints.first().x() + offset), curvePoints.first().x() + offset, curvePoints.first().z());
-    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
+    center1 = QVector3D(curvePoints.last().x() + offset, curvePoints.last().x() + offset, curvePoints.last().z());
+    center2 = QVector3D(curvePoints.first().x() + offset, curvePoints.first().x() + offset, curvePoints.first().z());
+    obj = FigureBuilder::initBelt(center2, center1, r, r, 0.1);
+    obj->rotate(QQuaternion::fromAxisAndAngle(0.0, 0.0, 1.0, 120));
+    m_groups.last()->addObject(obj);
 
-    center1 = QVector3D(curvePoints.last().x() + offset, -(curvePoints.last().x() + offset), curvePoints.last().z());
-    center2 = QVector3D(curvePoints.first().x() + offset, -(curvePoints.first().x() + offset), curvePoints.first().z());
-    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
-
-    center1 = QVector3D(-(curvePoints.last().x() + offset), -(curvePoints.last().x() + offset), curvePoints.last().z());
-    center2 = QVector3D(-(curvePoints.first().x() + offset), -(curvePoints.first().x() + offset), curvePoints.first().z());
-    m_groups.last()->addObject(FigureBuilder::initBelt(center2, center1, r, r, 0.1));
-
+    center1 = QVector3D(curvePoints.last().x() + offset, curvePoints.last().x() + offset, curvePoints.last().z());
+    center2 = QVector3D(curvePoints.first().x() + offset, curvePoints.first().x() + offset, curvePoints.first().z());
+    obj = FigureBuilder::initBelt(center2, center1, r, r, 0.1);
+    obj->rotate(QQuaternion::fromAxisAndAngle(0.0, 0.0, 1.0, -120));
+    m_groups.last()->addObject(obj);
 
     m_transformObjects.append(m_groups.last());
 }
