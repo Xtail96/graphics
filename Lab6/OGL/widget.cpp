@@ -676,13 +676,24 @@ void Widget::initStairs(QVector3D centerTop, double width, double height, double
 
     for(double level = centerBottom.z() + delta; level < centerTop.z(); level += delta)
     {
-        SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":123.jpg"),
+        /*SimpleObject3D* obj = FigureBuilder::initParallelepiped(QImage(":123.jpg"),
                                                                 QVector3D(centerBottom.x(),
                                                                           centerBottom.y(),
                                                                           level),
                                                                 width,
                                                                 side,
-                                                                side);
+                                                                side);*/
+        SimpleObject3D* obj = FigureBuilder::initStair(QImage(":123.jpg"),
+                                                       QVector3D(centerBottom.x() - width / 2,
+                                                                 centerBottom.y(),
+                                                                 level),
+                                                       QVector3D(centerBottom.x() + width / 2,
+                                                                 centerBottom.y(),
+                                                                 level),
+                                                       side / 2,
+                                                       side / 2,
+                                                       0.1);
+
         m_groups.last()->addObject(obj);
     }
 
