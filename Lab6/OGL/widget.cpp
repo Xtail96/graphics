@@ -25,18 +25,37 @@ void Widget::initializeGL()
     std::random_device rd;
     std::mt19937 random(rd());
     std::uniform_real_distribution<double> randomZ(0, 0.7);
+    std::uniform_int_distribution<double> randomTextureIndex(0, 2);
+
+    QImage texture = QImage(":123.jpg");
 
     initShaders();
     initSandGlass2(-1.0, 1.0, 0.9, precision);
     //initBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, 0.01);
-    initSimpleBook(QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, precision);
+    initSimpleBook(texture, QVector3D(0.0, 0.0, -1.4), QVector3D(0.0, 0.0, -2.0), 3, 4, precision);
 
     double topBorder = -2.0 - precision;
     double bottomBorder = -3.0;
 
     for(int i = 0; i < 14; i++)
     {
-        initSimpleBook(QVector3D(0.0, 0.0, topBorder), QVector3D(0.0, 0.0, bottomBorder), 3, 4, precision);
+        int textureIndex = randomTextureIndex(random);
+        switch (textureIndex) {
+        case 0:
+            texture = QImage(":123.jpg");
+            break;
+        case 1:
+            texture = QImage(":glass2.jpg");
+            break;
+        case 2:
+            texture = QImage(":paper2.jpg");
+            break;
+        default:
+            texture = QImage(":123.jpg");
+            break;
+        }
+
+        initSimpleBook(texture, QVector3D(0.0, 0.0, topBorder), QVector3D(0.0, 0.0, bottomBorder), 3, 4, precision);
 
         if(i % 2 != 0)
         {
@@ -486,12 +505,12 @@ void Widget::initBook(QVector3D centerTop, QVector3D centerBottom, double sideX,
     m_transformObjects.append(m_groups.last());
 }
 
-void Widget::initSimpleBook(QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta)
+void Widget::initSimpleBook(const QImage &texture, QVector3D centerTop, QVector3D centerBottom, double sideX, double sideY, double delta)
 {
     m_groups.push_back(QSharedPointer<Group3D>(new Group3D));
     double offset = std::fabs(std::fabs(centerTop.z()) - std::fabs(centerBottom.z())) - delta;
 
-    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerTop, sideX, sideY, delta));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(texture, centerTop, sideX, sideY, delta));
 
     //qDebug() << offset << centerTop.z() - delta;
 
@@ -502,14 +521,14 @@ void Widget::initSimpleBook(QVector3D centerTop, QVector3D centerBottom, double 
                                                                  sideX - delta * 2,
                                                                  sideY - delta * 2,
                                                                  offset));
-    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"),
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(texture,
                                                                  QVector3D(centerTop.x() + sideX / 2 - delta / 2,
                                                                            centerTop.y(),
                                                                            centerTop.z() - delta),
                                                                  delta,
                                                                  sideY,
                                                                  offset));
-    m_groups.last()->addObject(FigureBuilder::initParallelepiped(QImage(":123.jpg"), centerBottom, sideX, sideY, delta));
+    m_groups.last()->addObject(FigureBuilder::initParallelepiped(texture, centerBottom, sideX, sideY, delta));
     m_transformObjects.append(m_groups.last());
 }
 
