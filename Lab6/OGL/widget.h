@@ -75,6 +75,8 @@ private:
 
     QSharedPointer<Camera3D> m_camera;
 
+    QVector4D m_lightPosition;
+
 };
 
 #endif // WIDGET_H

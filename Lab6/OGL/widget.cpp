@@ -5,6 +5,7 @@ Widget::Widget(QWidget *parent)
 {
     m_camera = QSharedPointer<Camera3D>(new Camera3D());
     m_camera->translate(QVector3D(0.0f, 0.0f, -5.0f));
+    m_lightPosition = QVector4D(0.0, 0.0, 0.0, 1.0);
 }
 
 Widget::~Widget()
@@ -125,7 +126,7 @@ void Widget::paintGL()
 
     m_program.bind();
     m_program.setUniformValue("u_projectionMatrix", m_projectionMatrix);
-    m_program.setUniformValue("u_lightPosition", QVector4D(0.0, 0.0, 0.0, 1.0));
+    m_program.setUniformValue("u_lightPosition", m_lightPosition);
     m_program.setUniformValue("u_lightPower", 1.0f);
 
     m_camera->draw(&m_program);
@@ -147,22 +148,29 @@ void Widget::mousePressEvent(QMouseEvent *event)
 
 void Widget::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->buttons() != Qt::LeftButton)
+    if(event->buttons() == Qt::LeftButton)
     {
-        return;
+        QVector2D diff = QVector2D(event->localPos()) - m_mousePosition;
+        m_mousePosition = QVector2D(event->localPos());
+
+        float angle = diff.length() / 2.0;
+
+        // вектор, вокруг которого выполняется поворот, перпендикулярен направлению движения мыши
+        QVector3D axis = QVector3D(diff.y(), diff.x(), 0.0);
+
+        m_camera->rotate(QQuaternion::fromAxisAndAngle(axis, angle));
+
+        update();
     }
-
-    QVector2D diff = QVector2D(event->localPos()) - m_mousePosition;
-    m_mousePosition = QVector2D(event->localPos());
-
-    float angle = diff.length() / 2.0;
-
-    // вектор, вокруг которого выполняется поворот, перпендикулярен направлению движения мыши
-    QVector3D axis = QVector3D(diff.y(), diff.x(), 0.0);
-
-    m_camera->rotate(QQuaternion::fromAxisAndAngle(axis, angle));
-
-    update();
+    /*else
+    {
+        if(event->buttons() == Qt::RightButton)
+        {
+            QVector2D diff = QVector2D(event->localPos()) - m_mousePosition;
+            m_lightPosition = QVector4D(diff.x(), diff.y(), 0.0, 1.0);
+            update();
+        }
+    }*/
 }
 
 void Widget::wheelEvent(QWheelEvent *event)
@@ -217,6 +225,49 @@ void Widget::timerEvent(QTimerEvent *event)
 
 void Widget::keyPressEvent(QKeyEvent *event)
 {
+    switch (event->key()) {
+    case Qt::Key_Plus:
+    {
+        m_lightPosition = QVector4D(m_lightPosition.x(), m_lightPosition.y(), m_lightPosition.z() + 1, m_lightPosition.w());
+        update();
+        break;
+    }
+    case Qt::Key_Minus:
+    {
+        m_lightPosition = QVector4D(m_lightPosition.x(), m_lightPosition.y(), m_lightPosition.z() - 1, m_lightPosition.w());
+        update();
+        break;
+    }
+    case Qt::Key_Left:
+    {
+        m_lightPosition = QVector4D(m_lightPosition.x() - 1, m_lightPosition.y(), m_lightPosition.z(), m_lightPosition.w());
+        update();
+        break;
+    }
+    case Qt::Key_Right:
+    {
+        m_lightPosition = QVector4D(m_lightPosition.x() + 1, m_lightPosition.y(), m_lightPosition.z(), m_lightPosition.w());
+        update();
+        break;
+    }
+    case Qt::Key_Up:
+    {
+        m_lightPosition = QVector4D(m_lightPosition.x(), m_lightPosition.y() + 1, m_lightPosition.z(), m_lightPosition.w());
+        update();
+        break;
+    }
+    case Qt::Key_Down:
+    {
+        m_lightPosition = QVector4D(m_lightPosition.x(), m_lightPosition.y() - 1, m_lightPosition.z(), m_lightPosition.w());
+        update();
+        break;
+    }
+    default:
+        break;
+    }
+
+    qDebug() << m_lightPosition.z();
+
     /*switch (event->key()) {
     case Qt::Key_Left:
         m_groups[0]->removeObject(m_camera.data());
